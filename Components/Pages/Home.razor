@@ -1,7 +1,176 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>大阪紹介</PageTitle>
 
-<h1>Hello, world!</h1>
+<section class="page-container">
 
-Welcome to your new app.
+    <div class="page-hero">
+        <h1>大阪について知る3つの視点</h1>
+        <p>観光地・食文化・建築物の点から大阪を紹介します。</p>
+    </div>
+
+    <div class="topic-grid">
+        @foreach (var topic in topics) {
+            <button class="topic-card" type="button" @onclick="() => OpenModal(topic)">
+                <h2 class="topic-card-title">@topic.Title</h2>
+                <p class="topic-card-description">@topic.Description</p>
+                <span class="topic-card-button">詳しく見る</span>
+            </button>
+        }
+    </div>
+
+    @if (isModalOpen && selectedTopic is not null && selectedArticle is not null) {
+        <div class="topic-modal-backdrop">
+            <section class="topic-modal">
+
+                <div class="topic-modal-header">
+                    <h2>@selectedTopic.Title</h2>
+
+                    <button class="topic-modal-close" type="button" @onclick="CloseModal">
+                        ×
+                    </button>
+                </div>
+
+                <div class="topic-modal-body">
+
+                    <div class="topic-article-list">
+                        @foreach (var article in selectedTopic.Articles) {
+                            <button class="@GetArticleButtonClass(article)"
+                                    type="button"
+                                    @onclick="() => SelectArticle(article)">
+                                @article.Title
+                            </button>
+                        }
+                    </div>
+
+                    <div class="topic-article-content">
+                        <h3>@selectedArticle.Title</h3>
+                        <p>@selectedArticle.Body</p>
+                    </div>
+
+                </div>
+
+                <div class="topic-modal-footer">
+                    <button type="button" @onclick="CloseModal">
+                        閉じる
+                    </button>
+                </div>
+
+            </section>
+        </div>
+    }
+
+</section>
+
+@code {
+    private List<TopicItem> topics = new()
+    {
+        new TopicItem
+        {
+            Title = "観光地",
+            Description = "大阪を代表する観光スポットを紹介します。",
+            Articles = new()
+            {
+                new TopicArticle
+                {
+                    Title = "道頓堀",
+                    Body = "道頓堀は、大阪らしいにぎやかな雰囲気を感じられる場所です。飲食店や看板が多く、観光地として人気があります。"
+                },
+                new TopicArticle
+                {
+                    Title = "あべのハルカス",
+                    Body = "あべのハルカスは上層階にある全方位ガラス張りの展望エリアで大阪の街並みを一望することができます。お土産屋さんやカフェもあり、旅行で訪れるにはとてもいい場所です。"
+                },
+                new TopicArticle
+                {
+                    Title = "通天閣",
+                    Body = "通天閣は、新世界エリアにある大阪の象徴的な建物です。周辺には串カツ店なども多く、大阪らしい雰囲気があります。"
+                }
+            }
+        },
+        new TopicItem
+        {
+            Title = "食物",
+            Description = "大阪で親しまれている代表的な食文化を紹介します。",
+            Articles = new()
+            {
+                new TopicArticle
+                {
+                    Title = "たこ焼き",
+                    Body = "たこ焼きは、大阪を代表する粉もの料理です。外は香ばしく、中はやわらかい食感が特徴です。"
+                },
+                new TopicArticle
+                {
+                    Title = "お好み焼き",
+                    Body = "お好み焼きは、キャベツや肉などを生地と一緒に焼く料理です。ソースやマヨネーズをかけて食べることが多いです。"
+                },
+                new TopicArticle
+                {
+                    Title = "串カツ",
+                    Body = "串カツは、肉や野菜などを串に刺して揚げた料理です。新世界周辺の名物としても知られています。"
+                }
+            }
+        },
+        new TopicItem
+        {
+            Title = "建築物",
+            Description = "大阪で特徴的な建築物を紹介します。",
+            Articles = new()
+            {
+                new TopicArticle
+                {
+                    Title = "あべのハルカス",
+                    Body = "あべのハルカスは、高層階の展望エリアから大阪の街並みを一望できる建築物です。商業施設や美術館も入っています。"
+                },
+                new TopicArticle
+                {
+                    Title = "梅田スカイビル",
+                    Body = "梅田スカイビルは、特徴的な外観を持つ高層建築です。空中庭園展望台からは大阪市街を眺めることができます。"
+                },
+                new TopicArticle
+                {
+                    Title = "大阪城天守閣",
+                    Body = "大阪城天守閣は、大阪の歴史を感じられる建築物です。観光地としてだけでなく、歴史学習の場としても利用されています。"
+                }
+            }
+        }
+    };
+
+    private TopicItem? selectedTopic;
+    private TopicArticle? selectedArticle;
+    private bool isModalOpen;
+
+    private void OpenModal(TopicItem topic) {
+        selectedTopic = topic;
+        selectedArticle = topic.Articles.FirstOrDefault();
+        isModalOpen = true;
+    }
+
+    private void SelectArticle(TopicArticle article) {
+        selectedArticle = article;
+    }
+
+    private void CloseModal() {
+        isModalOpen = false;
+        selectedTopic = null;
+        selectedArticle = null;
+    }
+
+    private string GetArticleButtonClass(TopicArticle article) {
+        return selectedArticle == article
+            ? "topic-article-button is-selected"
+            : "topic-article-button";
+    }
+
+    private class TopicItem {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public List<TopicArticle> Articles { get; set; } = new();
+    }
+
+    private class TopicArticle {
+        public string Title { get; set; } = "";
+        public string Body { get; set; } = "";
+    }
+}

@@ -8,8 +8,13 @@ main {
     flex: 1;
 }
 
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+header {
+}
+
+header h1 {
+    font-size: 42px;
+    text-align: center;
+    margin: 10px; /*要変更箇所、ヘッダーの上下の余白の幅調整*/
 }
 
 .top-row {
