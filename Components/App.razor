@@ -5,6 +5,103 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
+
+    <script>
+            (() => {
+                const storageKey = "uiux-theme";
+
+                function normalizeTheme(theme) {
+                    return theme === "dark" ? "dark" : "light";
+                }
+
+                function getSystemTheme() {
+                    return window.matchMedia("(prefers-color-scheme: dark)").matches
+                        ? "dark"
+                        : "light";
+                }
+
+                function getStoredTheme() {
+                    try {
+                        return localStorage.getItem(storageKey);
+                    } catch {
+                        return null;
+                    }
+                }
+
+                function saveTheme(theme) {
+                    try {
+                        localStorage.setItem(storageKey, theme);
+                    } catch {
+                        // localStorageが使えない環境では保存しない
+                    }
+                }
+
+                function getTheme() {
+                    const storedTheme = getStoredTheme();
+                    const htmlTheme = document.documentElement.getAttribute("data-theme");
+                    const theme = storedTheme || htmlTheme || getSystemTheme();
+
+                    return normalizeTheme(theme);
+                }
+
+                function updateToggleLabel(theme) {
+                    const labels = document.querySelectorAll("[data-theme-label]");
+                    const buttons = document.querySelectorAll("[data-theme-toggle]");
+
+                    labels.forEach((label) => {
+                        label.textContent = theme === "dark" ? "Dark" : "Light";
+                    });
+
+                    buttons.forEach((button) => {
+                        button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+                    });
+                }
+
+                function applyTheme(theme) {
+                    const normalizedTheme = normalizeTheme(theme);
+
+                    document.documentElement.setAttribute("data-theme", normalizedTheme);
+                    document.documentElement.style.colorScheme = normalizedTheme;
+
+                    updateToggleLabel(normalizedTheme);
+
+                    return normalizedTheme;
+                }
+
+                function setTheme(theme) {
+                    const normalizedTheme = applyTheme(theme);
+
+                    saveTheme(normalizedTheme);
+
+                    return normalizedTheme;
+                }
+
+                function initTheme() {
+                    const theme = getStoredTheme() || getSystemTheme();
+
+                    applyTheme(theme);
+                }
+
+                function toggleTheme() {
+                    const currentTheme = getTheme();
+                    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+
+                    setTheme(nextTheme);
+                }
+
+                // CSS読み込み前に最初のテーマを反映する
+                initTheme();
+
+                window.appTheme = {
+                    getTheme,
+                    setTheme,
+                    applyTheme,
+                    initTheme,
+                    toggleTheme
+                };
+            })();
+    </script>
+
     <ResourcePreloader />
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
@@ -14,10 +111,28 @@
     <HeadOutlet />
 </head>
 
-<body>
+    <body>
     <Routes />
     <ReconnectModal />
+
     <script src="@Assets["_framework/blazor.web.js"]"></script>
+
+        <script>
+        // 初期ロード後にテーマボタン表示を同期する
+        window.appTheme.initTheme();
+
+        // BlazorのEnhanced Navigation後に、戻されたテーマ属性を再適用する
+        if (window.Blazor) {
+        Blazor.addEventListener("enhancedload", () => {
+        window.appTheme.initTheme();
+            });
+        }
+
+        // 戻る・進む・BFCache復帰時にも再適用する
+        window.addEventListener("pageshow", () => {
+    window.appTheme.initTheme();
+});
+    </script>
 </body>
 
 </html>

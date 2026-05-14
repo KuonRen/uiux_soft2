@@ -1,20 +1,52 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <main>
-        <header class="header">
-            <h1>ui/ux 課題</h1>
-            <hr />
-        </header>
+<div class="app-shell">
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-brand" href="/" data-enhance-nav="false">
+                <span class="site-brand-mark">UI</span>
 
-        <article class="content px-4">
-            @Body
-        </article>
+                <span class="site-brand-text">
+                    <span class="site-brand-title">UI/UX</span>
+                    <span class="site-brand-subtitle">Osaka Guide</span>
+                </span>
+            </a>
+
+            <button class="theme-toggle"
+                    type="button"
+                    data-theme-toggle
+                    aria-label="テーマを切り替える"
+                    aria-pressed="false"
+                    onclick="window.appTheme.toggleTheme()">
+
+                <span class="theme-toggle-label">Mode</span>
+
+                <span class="theme-toggle-state" data-theme-label>
+                    Light
+                </span>
+            </button>
+        </div>
+    </header>
+
+    <main class="site-main">
+        @Body
     </main>
+
+    <footer class="site-footer">
+        <div class="site-footer-inner">
+            <p class="site-footer-title">
+                UI/UX
+            </p>
+
+            <p class="site-footer-text">
+                created by KuonRen
+            </p>
+        </div>
+    </footer>
 </div>
 
-<div id="blazor-error-ui" data-nosnippet>
+    <div id="blazor-error-ui">
     An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+<a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
 </div>

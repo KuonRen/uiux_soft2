@@ -5,36 +5,72 @@
 
 <section class="page-container">
 
-    <div class="page-hero">
-        <h1>大阪について知る3つの視点</h1>
-        <p>観光地・食文化・建築物の点から大阪を紹介します。</p>
-    </div>
+    <section class="page-hero" aria-labelledby="page-title">
+        <p class="page-kicker">UI / UX Assignment</p>
 
-    <div class="topic-grid">
+        <h1 id="page-title">
+            大阪について知る3つの視点
+        </h1>
+
+        <p class="page-lead">
+            観光地・食文化・建築物の3つの切り口から、大阪の特徴を短い記事として紹介します。
+        </p>
+    </section>
+
+    <div id="topics" class="topic-grid" aria-label="大阪を知る3つの項目">
         @foreach (var topic in topics) {
-            <button class="topic-card" type="button" @onclick="() => OpenModal(topic)">
-                <h2 class="topic-card-title">@topic.Title</h2>
-                <p class="topic-card-description">@topic.Description</p>
-                <span class="topic-card-button">詳しく見る</span>
+            <button class="topic-card"
+                    type="button"
+                    @onclick="() => OpenModal(topic)"
+                    aria-label="@($"{topic.Title}の詳細を開く")">
+
+                <span class="topic-card-index">
+                    @topic.IndexLabel
+                </span>
+
+                <span class="topic-card-title">
+                    @topic.Title
+                </span>
+
+                <span class="topic-card-description">
+                    @topic.Description
+                </span>
+
+                <span class="topic-card-footer">
+                    <span>@topic.Articles.Count 件の記事</span>
+                    <span>詳しく見る</span>
+                </span>
             </button>
         }
     </div>
 
     @if (isModalOpen && selectedTopic is not null && selectedArticle is not null) {
         <div class="topic-modal-backdrop">
-            <section class="topic-modal">
+            <section class="topic-modal"
+                     role="dialog"
+                     aria-modal="true"
+                     aria-labelledby="topic-modal-title">
 
                 <div class="topic-modal-header">
-                    <h2>@selectedTopic.Title</h2>
+                    <div>
+                        <p class="topic-modal-kicker">Selected Topic</p>
 
-                    <button class="topic-modal-close" type="button" @onclick="CloseModal">
+                        <h2 id="topic-modal-title">
+                            @selectedTopic.Title
+                        </h2>
+                    </div>
+
+                    <button class="topic-modal-close"
+                            type="button"
+                            @onclick="CloseModal"
+                            aria-label="モーダルを閉じる">
                         ×
                     </button>
                 </div>
 
                 <div class="topic-modal-body">
 
-                    <div class="topic-article-list">
+                    <div class="topic-article-list" aria-label="記事一覧">
                         @foreach (var article in selectedTopic.Articles) {
                             <button class="@GetArticleButtonClass(article)"
                                     type="button"
@@ -44,10 +80,10 @@
                         }
                     </div>
 
-                    <div class="topic-article-content">
+                    <article class="topic-article-content">
                         <h3>@selectedArticle.Title</h3>
                         <p>@selectedArticle.Body</p>
-                    </div>
+                    </article>
 
                 </div>
 
@@ -68,70 +104,73 @@
     {
         new TopicItem
         {
+            IndexLabel = "01",
             Title = "観光地",
-            Description = "大阪を代表する観光スポットを紹介します。",
+            Description = "大阪らしさを感じられる代表的なスポットを紹介します。",
             Articles = new()
             {
                 new TopicArticle
                 {
                     Title = "道頓堀",
-                    Body = "道頓堀は、大阪らしいにぎやかな雰囲気を感じられる場所です。飲食店や看板が多く、観光地として人気があります。"
+                    Body = "道頓堀は、大阪らしいにぎやかな雰囲気を感じられる代表的な観光地です。飲食店や大きな看板が多く、写真を撮ったり、食べ歩きを楽しんだりしやすい場所です。初めて大阪を訪れる人にも分かりやすく、大阪の活気を体験できる点が特徴です。"
                 },
                 new TopicArticle
                 {
-                    Title = "あべのハルカス",
-                    Body = "あべのハルカスは上層階にある全方位ガラス張りの展望エリアで大阪の街並みを一望することができます。お土産屋さんやカフェもあり、旅行で訪れるにはとてもいい場所です。"
+                    Title = "大阪城",
+                    Body = "大阪城は、歴史を感じながら観光も楽しめる代表的なスポットです。天守閣だけでなく、周辺の公園も広く、季節によって桜や紅葉などの景色も楽しめます。歴史的な背景を学びながら散策できるため、観光地としてだけでなく学習の場としても分かりやすい場所です。"
                 },
                 new TopicArticle
                 {
                     Title = "通天閣",
-                    Body = "通天閣は、新世界エリアにある大阪の象徴的な建物です。周辺には串カツ店なども多く、大阪らしい雰囲気があります。"
+                    Body = "通天閣は、新世界エリアにある大阪の象徴的な建物です。周辺には串カツ店などが並び、昔ながらの大阪の雰囲気を感じられます。高層ビルとは違う親しみやすさがあり、街全体の空気感と合わせて楽しめる観光地です。"
                 }
             }
         },
         new TopicItem
         {
-            Title = "食物",
-            Description = "大阪で親しまれている代表的な食文化を紹介します。",
+            IndexLabel = "02",
+            Title = "食文化",
+            Description = "大阪で親しまれている代表的な食べ物を紹介します。",
             Articles = new()
             {
                 new TopicArticle
                 {
                     Title = "たこ焼き",
-                    Body = "たこ焼きは、大阪を代表する粉もの料理です。外は香ばしく、中はやわらかい食感が特徴です。"
+                    Body = "たこ焼きは、大阪を代表する粉もの料理です。外側は香ばしく、中はやわらかい食感が特徴です。店で食べるだけでなく、家庭やイベントでも作られることがあり、大阪の身近な食文化として親しまれています。"
                 },
                 new TopicArticle
                 {
                     Title = "お好み焼き",
-                    Body = "お好み焼きは、キャベツや肉などを生地と一緒に焼く料理です。ソースやマヨネーズをかけて食べることが多いです。"
+                    Body = "お好み焼きは、キャベツや肉などを生地と一緒に焼き、ソースやマヨネーズをかけて食べる料理です。具材の組み合わせを変えやすく、自分好みに作れる点が特徴です。大阪の食文化を説明するうえで、たこ焼きと並んで分かりやすい料理です。"
                 },
                 new TopicArticle
                 {
                     Title = "串カツ",
-                    Body = "串カツは、肉や野菜などを串に刺して揚げた料理です。新世界周辺の名物としても知られています。"
+                    Body = "串カツは、肉や野菜などを串に刺して揚げた料理です。新世界周辺の名物としても知られ、観光と食文化が結びついた例として紹介しやすい料理です。手軽に食べられる点も大阪らしい親しみやすさにつながっています。"
                 }
             }
         },
         new TopicItem
         {
+            IndexLabel = "03",
             Title = "建築物",
-            Description = "大阪で特徴的な建築物を紹介します。",
+            Description = "大阪の印象を形づくる特徴的な建築物を紹介します。",
             Articles = new()
             {
                 new TopicArticle
                 {
                     Title = "あべのハルカス",
-                    Body = "あべのハルカスは、高層階の展望エリアから大阪の街並みを一望できる建築物です。商業施設や美術館も入っています。"
+                    Body = "あべのハルカスは、高層階の展望エリアから大阪の街並みを一望できる建築物です。商業施設や美術館も入っており、観光・買い物・文化体験をまとめて楽しめる点が特徴です。現代的な大阪を紹介する建築物として適しています。"
                 },
                 new TopicArticle
                 {
                     Title = "梅田スカイビル",
-                    Body = "梅田スカイビルは、特徴的な外観を持つ高層建築です。空中庭園展望台からは大阪市街を眺めることができます。"
+                    Body = "梅田スカイビルは、特徴的な外観を持つ高層建築です。空中庭園展望台から大阪市街を眺めることができ、建物そのもののデザイン性も高い点が魅力です。大阪の都市的な景観を表す建築物として紹介しやすい存在です。"
                 },
                 new TopicArticle
                 {
                     Title = "大阪城天守閣",
-                    Body = "大阪城天守閣は、大阪の歴史を感じられる建築物です。観光地としてだけでなく、歴史学習の場としても利用されています。"
+                    Body = "大阪城天守閣は、大阪の歴史を感じられる建築物です。観光地としてだけでなく、歴史学習の場としても利用されています。現代的な建築物とは違い、大阪の過去と現在をつなぐ存在として説明できます。"
                 }
             }
         }
@@ -141,34 +180,41 @@
     private TopicArticle? selectedArticle;
     private bool isModalOpen;
 
+    // カードクリック時にモーダルを開く
     private void OpenModal(TopicItem topic) {
         selectedTopic = topic;
         selectedArticle = topic.Articles.FirstOrDefault();
         isModalOpen = true;
     }
 
+    // 記事ボタンクリック時に本文を切り替える
     private void SelectArticle(TopicArticle article) {
         selectedArticle = article;
     }
 
+    // モーダルを閉じて選択状態をリセットする
     private void CloseModal() {
         isModalOpen = false;
         selectedTopic = null;
         selectedArticle = null;
     }
 
+    // 選択中の記事ボタンだけ見た目を変える
     private string GetArticleButtonClass(TopicArticle article) {
         return selectedArticle == article
             ? "topic-article-button is-selected"
             : "topic-article-button";
     }
 
+    // 観光地・食文化・建築物などの大項目
     private class TopicItem {
+        public string IndexLabel { get; set; } = "";
         public string Title { get; set; } = "";
         public string Description { get; set; } = "";
         public List<TopicArticle> Articles { get; set; } = new();
     }
 
+    // モーダル内で表示する記事
     private class TopicArticle {
         public string Title { get; set; } = "";
         public string Body { get; set; } = "";
