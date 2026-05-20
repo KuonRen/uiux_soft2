@@ -8,7 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Components\images\" />
+    <Compile Remove="Components\images\**" />
+    <Content Remove="Components\images\**" />
+    <EmbeddedResource Remove="Components\images\**" />
+    <None Remove="Components\images\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\osaka_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\favicon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

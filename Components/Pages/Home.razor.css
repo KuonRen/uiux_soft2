@@ -212,6 +212,7 @@
     align-content: start;
     border-right: 1px solid var(--border-color);
     background: var(--surface-sub);
+    overflow-y: scroll;
 }
 
 /* 記事ボタン */
@@ -250,6 +251,7 @@
     min-height: 0;
     padding: 28px;
     overflow-y: auto;
+    overflow-y: scroll;
 }
 
     .topic-article-content h3 {
