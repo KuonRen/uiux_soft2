@@ -7,99 +7,99 @@
     <base href="/" />
 
     <script>
-            (() => {
-                const storageKey = "uiux-theme";
+        (() => {
+            const storageKey = "uiux-theme";
 
-                function normalizeTheme(theme) {
-                    return theme === "dark" ? "dark" : "light";
+            function normalizeTheme(theme) {
+                return theme === "dark" ? "dark" : "light";
+            }
+
+            function getSystemTheme() {
+                return window.matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "dark"
+                    : "light";
+            }
+
+            function getStoredTheme() {
+                try {
+                    return localStorage.getItem(storageKey);
+                } catch {
+                    return null;
                 }
+            }
 
-                function getSystemTheme() {
-                    return window.matchMedia("(prefers-color-scheme: dark)").matches
-                        ? "dark"
-                        : "light";
+            function saveTheme(theme) {
+                try {
+                    localStorage.setItem(storageKey, theme);
+                } catch {
+                    // localStorageが使えない環境では保存しない
                 }
+            }
 
-                function getStoredTheme() {
-                    try {
-                        return localStorage.getItem(storageKey);
-                    } catch {
-                        return null;
-                    }
-                }
+            function getTheme() {
+                const storedTheme = getStoredTheme();
+                const htmlTheme = document.documentElement.getAttribute("data-theme");
+                const theme = storedTheme || htmlTheme || getSystemTheme();
 
-                function saveTheme(theme) {
-                    try {
-                        localStorage.setItem(storageKey, theme);
-                    } catch {
-                        // localStorageが使えない環境では保存しない
-                    }
-                }
+                return normalizeTheme(theme);
+            }
 
-                function getTheme() {
-                    const storedTheme = getStoredTheme();
-                    const htmlTheme = document.documentElement.getAttribute("data-theme");
-                    const theme = storedTheme || htmlTheme || getSystemTheme();
+            function updateToggleLabel(theme) {
+                const labels = document.querySelectorAll("[data-theme-label]");
+                const buttons = document.querySelectorAll("[data-theme-toggle]");
 
-                    return normalizeTheme(theme);
-                }
+                labels.forEach((label) => {
+                    label.textContent = theme === "dark" ? "Dark" : "Light";
+                });
 
-                function updateToggleLabel(theme) {
-                    const labels = document.querySelectorAll("[data-theme-label]");
-                    const buttons = document.querySelectorAll("[data-theme-toggle]");
+                buttons.forEach((button) => {
+                    button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+                });
+            }
 
-                    labels.forEach((label) => {
-                        label.textContent = theme === "dark" ? "Dark" : "Light";
-                    });
+            function applyTheme(theme) {
+                const normalizedTheme = normalizeTheme(theme);
 
-                    buttons.forEach((button) => {
-                        button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
-                    });
-                }
+                document.documentElement.setAttribute("data-theme", normalizedTheme);
+                document.documentElement.style.colorScheme = normalizedTheme;
 
-                function applyTheme(theme) {
-                    const normalizedTheme = normalizeTheme(theme);
+                updateToggleLabel(normalizedTheme);
 
-                    document.documentElement.setAttribute("data-theme", normalizedTheme);
-                    document.documentElement.style.colorScheme = normalizedTheme;
+                return normalizedTheme;
+            }
 
-                    updateToggleLabel(normalizedTheme);
+            function setTheme(theme) {
+                const normalizedTheme = applyTheme(theme);
 
-                    return normalizedTheme;
-                }
+                saveTheme(normalizedTheme);
 
-                function setTheme(theme) {
-                    const normalizedTheme = applyTheme(theme);
+                return normalizedTheme;
+            }
 
-                    saveTheme(normalizedTheme);
+            function initTheme() {
+                const theme = getStoredTheme() || getSystemTheme();
 
-                    return normalizedTheme;
-                }
+                applyTheme(theme);
+            }
 
-                function initTheme() {
-                    const theme = getStoredTheme() || getSystemTheme();
+            function toggleTheme() {
+                const currentTheme = getTheme();
+                const nextTheme = currentTheme === "dark" ? "light" : "dark";
 
-                    applyTheme(theme);
-                }
+                setTheme(nextTheme);
+            }
 
-                function toggleTheme() {
-                    const currentTheme = getTheme();
-                    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+            // CSS読み込み前に最初のテーマを反映する
+            initTheme();
 
-                    setTheme(nextTheme);
-                }
-
-                // CSS読み込み前に最初のテーマを反映する
-                initTheme();
-
-                window.appTheme = {
-                    getTheme,
-                    setTheme,
-                    applyTheme,
-                    initTheme,
-                    toggleTheme
-                };
-            })();
+            window.appTheme = {
+                getTheme,
+                setTheme,
+                applyTheme,
+                initTheme,
+                toggleTheme
+            };
+        })();
     </script>
 
     <ResourcePreloader />
@@ -114,13 +114,13 @@
     <HeadOutlet />
 </head>
 
-    <body>
+<body>
     <Routes />
     <ReconnectModal />
 
     <script src="@Assets["_framework/blazor.web.js"]"></script>
 
-        <script>
+    <script>
         // 初期ロード後にテーマボタン表示を同期する
         window.appTheme.initTheme();
 
@@ -136,11 +136,17 @@
             window.appTheme.initTheme();
         });
 
-        // モーダルのフォーカストラップ制御
+        // モーダルのフォーカストラップ・スクロールロック・フォーカス復元制御
         window.appModal = {
             setupFocusTrap: function (modalSelector) {
                 const modal = document.querySelector(modalSelector);
                 if (!modal) return;
+
+                // フォーカス元の要素を記録
+                window.appModal._lastFocusedElement = document.activeElement;
+
+                // Bodyのスクロールをロック
+                document.body.classList.add('modal-open');
 
                 const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
                 if (focusableElements.length === 0) return;
@@ -169,6 +175,11 @@
                                 e.preventDefault();
                             }
                         }
+                    } else if (e.key === 'Escape') {
+                        // Escキーで閉じるボタンがあればクリックしてモーダルを閉じる
+                        if (closeBtn) {
+                            closeBtn.click();
+                        }
                     }
                 };
 
@@ -176,10 +187,19 @@
                 modal.addEventListener('keydown', handleKeyDown);
             },
             removeFocusTrap: function (modalSelector) {
+                // Bodyのスクロールロック解除
+                document.body.classList.remove('modal-open');
+
                 const modal = document.querySelector(modalSelector);
                 if (modal && modal._focusTrapListener) {
                     modal.removeEventListener('keydown', modal._focusTrapListener);
                     delete modal._focusTrapListener;
+                }
+
+                // フォーカスを呼び出し元の要素に復元する
+                if (window.appModal._lastFocusedElement && typeof window.appModal._lastFocusedElement.focus === 'function') {
+                    window.appModal._lastFocusedElement.focus();
+                    delete window.appModal._lastFocusedElement;
                 }
             }
         };

@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
 /* ================================
    Global theme tokens
    ================================ */
@@ -20,6 +18,7 @@
     --accent-soft: rgba(37, 99, 235, 0.08);
     --shadow-soft: 0 16px 36px rgba(15, 23, 42, 0.05);
     --shadow-strong: 0 32px 64px rgba(15, 23, 42, 0.12);
+    --modal-overlay: rgba(15, 23, 42, 0.6);
 }
 
 :root[data-theme="dark"] {
@@ -39,6 +38,7 @@
     --accent-soft: rgba(96, 165, 250, 0.08);
     --shadow-soft: 0 16px 40px rgba(0, 0, 0, 0.4);
     --shadow-strong: 0 32px 80px rgba(0, 0, 0, 0.6);
+    --modal-overlay: rgba(2, 6, 23, 0.85);
 }
 
 /* ================================
@@ -65,4 +65,9 @@ input,
 textarea,
 select {
     font: inherit;
+}
+
+/* モーダル表示時に背後のスクロールを完全に抑止する */
+body.modal-open {
+    overflow: hidden !important;
 }

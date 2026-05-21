@@ -202,7 +202,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(15, 23, 42, 0.6);
+    background: var(--modal-overlay);
     backdrop-filter: blur(12px);
     animation: modalBackdropFade 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -266,6 +266,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    margin-right: 8px;
 }
 
 .topic-modal-kicker {
@@ -533,16 +534,34 @@
     .topic-article-content p {
         line-height: 1.9;
     }
+
+    /* モバイル表示での画像レイアウト調整 (安全なカード型インライン配置) */
+    button.topic-article-image-container {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        height: auto;
+        aspect-ratio: 16 / 9; /* 比率を美しく保つ */
+        margin-bottom: 16px;
+    }
 }
 
 /* 記事本文内の画像 */
-.topic-article-image-container {
+button.topic-article-image-container {
+    display: block;
     width: 100%;
-    height: 260px; /* 高さを固定し、レイアウトシフト（ガタつき）を防止 */
+    height: auto;
+    aspect-ratio: 16 / 9; /* アスペクト比を固定し、レイアウトシフトを防止 */
+    max-height: 280px; /* 大きな画面でも過剰に縦に伸びるのを防ぐ */
+    padding: 0;
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 20px;
-    border: 1px solid var(--border-color);
     box-shadow: var(--shadow-soft);
     position: relative;
     /* スケルトンローディング効果の背景グラデーション */
@@ -555,6 +574,11 @@
     animation: skeleton-glow 1.4s ease infinite;
 }
 
+button.topic-article-image-container:focus-visible {
+    outline: 3px solid var(--accent-soft);
+    outline-offset: 3px;
+}
+
 @keyframes skeleton-glow {
     0% {
         background-position: 100% 50%;
@@ -564,17 +588,35 @@
     }
 }
 
-/* 画像未配置・エラー時のNo Imageテキスト */
+/* 画像未配置・エラー時の洗練されたカメラ風プレースホルダ */
 .topic-article-image-container::before {
+    content: "";
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 30px;
+    border: 2px solid var(--text-muted);
+    border-radius: 6px;
+    background: radial-gradient(circle at center, transparent 35%, var(--text-muted) 36%, var(--text-muted) 45%, transparent 46%);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.topic-article-image-container::after {
     content: "No Image Available";
     position: absolute;
-    top: 50%;
+    top: 58%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--text-muted);
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.55;
     pointer-events: none;
     z-index: 1;
 }
@@ -605,5 +647,140 @@
     .topic-card:hover,
     .topic-modal-footer button:hover {
         transform: none !important;
+    }
+}
+
+/* PC表示時のパディングをコンパクトにし、1画面に収まりやすくする */
+@media (min-width: 901px) {
+    .page-container {
+        padding: 32px 0 40px;
+    }
+    .page-hero {
+        margin-bottom: 24px;
+    }
+}
+
+/* 画像ライトボックス (ポップアッププレビュー) */
+.image-lightbox-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2000; /* モーダルのさらに上に重ねる */
+    background: rgba(2, 6, 23, 0.92);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: lightboxFadeIn 200ms ease forwards;
+}
+
+.image-lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 85vh;
+    box-shadow: var(--shadow-strong);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--surface-main);
+    animation: lightboxZoomIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    /* 上部に閉じるボタン用のヘッダー領域を確保し、画像と閉じるボタンの衝突を防ぐ */
+    padding: 64px 16px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-lightbox-content img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(85vh - 96px); /* paddingと余白を差し引いた安全な高さ */
+    object-fit: contain;
+    border-radius: 12px; /* プレビュー画像自体も角丸に整えて高級感を出す */
+}
+
+.image-lightbox-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    background: var(--surface-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 140ms ease, transform 140ms ease, border-color 140ms ease;
+    box-shadow: var(--shadow-soft);
+}
+
+.image-lightbox-close:hover {
+    background: var(--surface-muted);
+    border-color: var(--accent-color);
+    transform: scale(1.05);
+}
+
+@keyframes lightboxFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes lightboxZoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 画像右下のズームインバッジ (拡大可能であることを視覚的に伝える) */
+.image-zoom-badge {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    opacity: 0.85;
+    transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 200ms ease, background 200ms ease;
+}
+
+/* PC版ホバー時のインタラクション */
+@media (min-width: 641px) {
+    .image-zoom-badge {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    button.topic-article-image-container:hover .image-zoom-badge {
+        opacity: 1;
+        transform: scale(1);
+        background: var(--accent-color);
+        border-color: transparent;
+    }
+}
+
+/* モバイル版では最初から視認しやすいように表示 */
+@media (max-width: 640px) {
+    .image-zoom-badge {
+        opacity: 0.9;
+        background: rgba(15, 23, 42, 0.8);
+    }
+    button.topic-article-image-container:active .image-zoom-badge {
+        transform: scale(0.9);
     }
 }
