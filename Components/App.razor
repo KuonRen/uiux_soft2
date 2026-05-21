@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -103,6 +103,9 @@
     </script>
 
     <ResourcePreloader />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["uiux.styles.css"]" />
@@ -123,15 +126,63 @@
 
         // BlazorのEnhanced Navigation後に、戻されたテーマ属性を再適用する
         if (window.Blazor) {
-        Blazor.addEventListener("enhancedload", () => {
-        window.appTheme.initTheme();
+            Blazor.addEventListener("enhancedload", () => {
+                window.appTheme.initTheme();
             });
         }
 
         // 戻る・進む・BFCache復帰時にも再適用する
         window.addEventListener("pageshow", () => {
-    window.appTheme.initTheme();
-});
+            window.appTheme.initTheme();
+        });
+
+        // モーダルのフォーカストラップ制御
+        window.appModal = {
+            setupFocusTrap: function (modalSelector) {
+                const modal = document.querySelector(modalSelector);
+                if (!modal) return;
+
+                const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                if (focusableElements.length === 0) return;
+
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                // 最初の要素（または閉じるボタン）にフォーカスを合わせる
+                const closeBtn = modal.querySelector('.topic-modal-close');
+                if (closeBtn) {
+                    closeBtn.focus();
+                } else {
+                    firstElement.focus();
+                }
+
+                const handleKeyDown = function (e) {
+                    if (e.key === 'Tab') {
+                        if (e.shiftKey) { // Shift + Tab
+                            if (document.activeElement === firstElement) {
+                                lastElement.focus();
+                                e.preventDefault();
+                            }
+                        } else { // Tab
+                            if (document.activeElement === lastElement) {
+                                firstElement.focus();
+                                e.preventDefault();
+                            }
+                        }
+                    }
+                };
+
+                modal._focusTrapListener = handleKeyDown;
+                modal.addEventListener('keydown', handleKeyDown);
+            },
+            removeFocusTrap: function (modalSelector) {
+                const modal = document.querySelector(modalSelector);
+                if (modal && modal._focusTrapListener) {
+                    modal.removeEventListener('keydown', modal._focusTrapListener);
+                    delete modal._focusTrapListener;
+                }
+            }
+        };
     </script>
 </body>
 

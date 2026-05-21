@@ -1,0 +1,226 @@
+using uiux.Models;
+
+namespace uiux.Services;
+
+public class OsakaDataService
+{
+    public List<TopicItem> GetTopics()
+    {
+        return new List<TopicItem>
+        {
+            new TopicItem
+            {
+                IndexLabel = "01",
+                Title = "観光地",
+                Description = "大阪の観光地について紹介します。",
+                IconType = "spots",
+                GradientClass = "gradient-spots",
+                Articles = new()
+                {
+                    new TopicArticle
+                    {
+                        Title = "道頓堀",
+                        Body = "道頓堀は、大阪ミナミを代表するにぎやかな観光地です。グリコサインや巨大な立体看板が有名で、大阪らしい派手で活気のある街並みを楽しめます。たこ焼きやお好み焼きなどの食べ歩きもでき、観光と食文化を同時に味わえる場所です。",
+                        ImagePath = "/images/spots/test.png"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "ユニバーサル・スタジオ・ジャパン",
+                        Body = "ユニバーサル・スタジオ・ジャパンは、大阪ベイエリアにある大型テーマパークです。映画や人気キャラクターの世界を再現したアトラクションが多く、子どもから大人まで楽しめます。大阪を代表する現代的な観光地の一つです。",
+                        ImagePath = "/images/spots/usj.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "海遊館",
+                        Body = "海遊館は、大阪港エリアにある大規模な水族館です。太平洋を中心とした海の生き物を展示しており、ジンベエザメを見られる大きな水槽が特に有名です。海の生態系を学びながら楽しめる観光地です。",
+                        ImagePath = "/images/spots/kaiyukan.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "黒門市場",
+                        Body = "黒門市場は、大阪の食文化を感じられる市場です。新鮮な魚介類や果物、惣菜などを扱う店が並び、食べ歩きも楽しめます。観光客だけでなく地元の人にも利用されてきた、大阪らしい食のスポットです。",
+                        ImagePath = "/images/spots/kuromon.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "天王寺動物園",
+                        Body = "天王寺動物園は、長い歴史を持つ大阪市内の動物園です。都市部にありながら多くの動物を見ることができ、家族連れにも人気があります。周辺には公園や商業施設もあり、散策と合わせて楽しめる場所です。",
+                        ImagePath = "/images/spots/tennoji_zoo.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "天神橋筋商店街",
+                        Body = "天神橋筋商店街は、日本でも特に長い商店街として知られています。飲食店や日用品店が多く並び、観光地でありながら大阪の日常的な生活感も感じられます。食べ歩きや買い物を通して、庶民的な大阪の魅力を楽しめます。",
+                        ImagePath = "/images/spots/tenjinbashi.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "万博記念公園",
+                        Body = "万博記念公園は、1970年に開かれた大阪万博の跡地に整備された公園です。広い自然の中で散策を楽しめるだけでなく、博物館やイベント施設もあります。大阪の近現代の歴史と自然を同時に感じられる観光地です。",
+                        ImagePath = "/images/spots/banpaku.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "なんばグランド花月",
+                        Body = "なんばグランド花月は、大阪のお笑い文化を代表する劇場です。漫才や落語、吉本新喜劇などを楽しむことができ、観光客にも人気があります。大阪らしい笑いの文化を直接体験できる場所です。",
+                        ImagePath = "/images/spots/ngk.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "天保山大観覧車",
+                        Body = "天保山大観覧車は、大阪港エリアにある大きな観覧車です。高い場所から大阪湾や市街地を眺めることができ、海遊館など周辺の観光地とも一緒に楽しめます。昼と夜で違った景色を見られる点も魅力です。",
+                        ImagePath = "/images/spots/tempozan.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "中之島公園",
+                        Body = "中之島公園は、堂島川と土佐堀川に囲まれた都心の公園です。水辺の景色やバラ園があり、落ち着いた雰囲気の中で散歩を楽しめます。周辺には歴史的な建物も多く、大阪の都市景観を感じられる場所です。",
+                        ImagePath = "/images/spots/nakanoshima.jpg"
+                    },
+                }
+            },
+            new TopicItem
+            {
+                IndexLabel = "02",
+                Title = "歴史",
+                Description = "大阪の歴史について紹介します。",
+                IconType = "history",
+                GradientClass = "gradient-history",
+                Articles = new()
+                {
+                    new TopicArticle
+                    {
+                        Title = "難波津",
+                        Body = "難波津は、古代の大阪にあった重要な港です。海や川を利用した交通の中心として発展し、大陸や瀬戸内海方面との交流を支えました。大阪が昔から交通と物流の要所であったことを示す歴史的な題材です。",
+                        ImagePath = "/images/spots/nanwatsu.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "難波宮",
+                        Body = "難波宮は、古代に大阪へ置かれた宮殿です。現在の大阪市中心部に都が存在していたことを示す重要な史跡で、政治の中心地としての大阪の歴史を学ぶことができます。大阪が古くから重要な地域だったことを伝える存在です。",
+                        ImagePath = "/images/spots/naniwanomiya.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "大坂 of the Jin (大坂の陣)",
+                        Body = "大坂の陣は、豊臣家と徳川家が争った大きな戦いです。この戦いによって豊臣家は滅び、徳川幕府の支配がより強まりました。大阪の歴史を語るうえで、戦国時代から江戸時代への移り変わりを示す重要な出来事です。",
+                        ImagePath = "/images/spots/osakanojin.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "天下の台所",
+                        Body = "江戸時代の大坂は、全国から米や物資が集まる商業都市として栄えました。そのため、大坂は「天下の台所」と呼ばれるようになりました。商人の町として発展した大阪の特徴をよく表す歴史的な言葉です。",
+                        ImagePath = "/images/spots/tenkanodaikokoro.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "堂島米会所",
+                        Body = "堂島米会所は、江戸時代の大坂で米の取引が行われた場所です。米の価格を決める重要な役割を持ち、商業都市としての大阪の発展に関わりました。大阪が経済の中心地として栄えたことを説明しやすい題材です。",
+                        ImagePath = "/images/spots/dojima.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "適塾と緒方洪庵",
+                        Body = "適塾は、緒方洪庵が開いた蘭学塾です。医学や西洋の学問を学ぶ場として、多くの優れた人材を育てました。大阪が商業だけでなく、学問や近代化にも関わっていたことを示す歴史的な場所です。",
+                        ImagePath = "/images/spots/tekijuku.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "文楽",
+                        Body = "文楽は、大阪と深い関わりを持つ伝統芸能です。人形、語り、三味線が一体となって物語を表現する点が特徴です。長い歴史を持つ文化として、大阪の芸能や庶民文化を紹介する題材に向いています。",
+                        ImagePath = "/images/spots/bunraku.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "水都大阪",
+                        Body = "大阪は、川や堀を利用して発展してきた都市です。物資の運搬や人の移動に水路が活用され、商業の発展を支えました。現在も中之島や道頓堀などに、水の都としての面影を見ることができます。",
+                        ImagePath = "/images/spots/suito.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "大阪大空襲",
+                        Body = "大阪大空襲は、太平洋戦争末期に大阪が受けた大規模な空襲です。多くの建物が焼失し、多くの人々が被害を受けました。戦争の悲惨さと、戦後に大阪が復興していった歴史を考えるうえで重要な出来事です。",
+                        ImagePath = "/images/spots/kushu.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "1970年大阪万博",
+                        Body = "1970年大阪万博は、日本で初めて開かれた国際博覧会です。高度経済成長期の日本を象徴する大きなイベントで、多くの人が未来の技術や文化に触れました。現在の大阪のイメージにもつながる近現代史の重要な出来事です。",
+                        ImagePath = "/images/spots/expo70.jpg"
+                    },
+                }
+            },
+            new TopicItem
+            {
+                IndexLabel = "03",
+                Title = "建築物",
+                Description = "大阪の建築物について紹介します。",
+                IconType = "architecture",
+                GradientClass = "gradient-architecture",
+                Articles = new()
+                {
+                    new TopicArticle
+                    {
+                        Title = "大阪城天守閣",
+                        Body = "大阪城天守閣は、大阪を代表する歴史的な建築物です。豊臣秀吉 of 時代に築かれた城をもとに、現在の天守閣は近代に復興されました。城内では大阪城の歴史を学ぶことができ、外観も大阪の象徴として親しまれています。",
+                        ImagePath = "/images/spots/osakajo.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "通天閣",
+                        Body = "通天閣は、新世界エリアにある大阪の象徴的な建物です。周辺には串カツ店などが並び、昔ながら of 大阪の雰囲気を感じられます。高層ビルとは違う親しみやすさがあり、街全体の空気感と合わせて楽しめる観光地です。",
+                        ImagePath = "/images/spots/tsutenkaku.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "大阪市中央公会堂",
+                        Body = "大阪市中央公会堂は、中之島にある歴史的な建築物です。赤レンガを使った外観が特徴で、近代大阪の文化や市民活動を支えてきました。現在も講演会やイベントなどに使われており、歴史と現役の施設としての役割を持っています。",
+                        ImagePath = "/images/spots/kokaido.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "梅田スカイビル",
+                        Body = "梅田スカイビルは、2つの高層ビルを上部でつないだ独特な形の建築物です。空中庭園展望台からは大阪の街を広く見渡すことができます。現代的で印象的なデザインを持ち、大阪の都市景観を代表する建物の一つです。",
+                        ImagePath = "/images/spots/skybuilding.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "あべのハルカス",
+                        Body = "あべのハルカスは、天王寺・阿倍野エリアにある超高層ビルです。展望台、百貨店、美術館、ホテルなどが入っており、観光や買い物に利用できます。大阪の現代的な発展を感じられる建築物です。",
+                        ImagePath = "/images/spots/harukas.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "住吉大社本殿",
+                        Body = "住吉大社本殿は、古い神社建築の様式を伝える貴重な建物です。直線的で簡素な造りが特徴で、現在も多くの参拝者が訪れます。大阪に残る伝統的な建築を紹介する題材として適しています。",
+                        ImagePath = "/images/spots/sumiyoshi.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "四天王寺伽藍",
+                        Body = "四天王寺伽藍は、仏教寺院の古い形式を伝える建築群です。中門、五重塔、金堂、講堂が一直線に並ぶ配置が特徴です。日本仏教の歴史と大阪の古い建築文化を学ぶことができる場所です。",
+                        ImagePath = "/images/spots/shitennoji.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "大阪府立中之島図書館",
+                        Body = "大阪府立中之島図書館は、中之島にある歴史ある図書館建築です。重厚な外観と中央ホールが特徴で、近代建築としての美しさを持っています。知識や文化を支えてきた建物として、大阪の歴史的景観を形作っています。",
+                        ImagePath = "/images/spots/library.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "日本銀行大阪支店旧館",
+                        Body = "日本銀行大阪支店旧館は、御堂筋沿いに建つ洋風の歴史的建築物です。ドームを持つ重厚な外観が特徴で、大阪が金融や商業の都市として発展してきたことを伝えています。近代大阪の雰囲気を感じられる建物です。",
+                        ImagePath = "/images/spots/boj.jpg"
+                    },
+                    new TopicArticle
+                    {
+                        Title = "太陽の塔",
+                        Body = "太陽の塔は、1970年大阪万博の象徴として建てられた建築物です。岡本太郎による個性的なデザインが特徴で、現在も万博記念公園の中心的な存在です。芸術作品でありながら、大阪の近現代を象徴する建物でもあります。",
+                        ImagePath = "/images/spots/taiyounoto.jpg"
+                    },
+                }
+            }
+        };
+    }
+}

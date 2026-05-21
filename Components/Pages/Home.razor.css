@@ -1,4 +1,4 @@
-﻿/* ページ全体 */
+/* ページ全体 */
 .page-container {
     width: min(1040px, calc(100% - 32px));
     margin: 0 auto;
@@ -16,7 +16,7 @@
     margin: 0 0 10px;
     color: var(--accent-color);
     font-size: 0.74rem;
-    font-weight: 850;
+    font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
 }
@@ -28,6 +28,7 @@
     font-size: clamp(2rem, 4.2vw, 3.6rem);
     line-height: 1.15;
     letter-spacing: -0.045em;
+    font-weight: 800;
 }
 
 /* 説明文 */
@@ -43,47 +44,106 @@
 .topic-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    gap: 20px; /* 16px から 20px に少し広げてゆとりを持たせる */
     scroll-margin-top: 32px;
 }
 
-/* カード */
+/* カード共通 */
 .topic-card {
-    min-height: 230px;
-    padding: 20px;
+    --card-accent: var(--accent-color);
+    --card-accent-soft: var(--accent-soft);
+    min-height: 240px;
+    padding: 24px;
     border: 1px solid var(--border-color);
-    border-radius: 18px;
+    border-radius: 20px;
     color: var(--text-primary);
     background: var(--surface-main);
+    backdrop-filter: blur(20px); /* 磨りガラスによる高級感 */
+    -webkit-backdrop-filter: blur(20px);
     box-shadow: var(--shadow-soft);
     display: flex;
     flex-direction: column;
     text-align: left;
     cursor: pointer;
-    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+    position: relative;
+    overflow: hidden;
+    transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 200ms ease, 
+                border-color 200ms ease, 
+                background 200ms ease;
 }
 
-    .topic-card:hover {
-        transform: translateY(-3px);
-        border-color: var(--accent-color);
-        box-shadow: var(--shadow-strong);
-    }
+/* トピックごとのグラデーション & 装飾 */
+.topic-card.gradient-spots {
+    --card-accent: #f97316;
+    --card-accent-soft: rgba(249, 115, 22, 0.08);
+    background: linear-gradient(135deg, var(--surface-main), rgba(249, 115, 22, 0.02));
+}
+:root[data-theme="dark"] .topic-card.gradient-spots {
+    background: linear-gradient(135deg, var(--surface-main), rgba(249, 115, 22, 0.04));
+    border-color: rgba(249, 115, 22, 0.15); /* 枠線が美しく光るような効果 */
+}
 
-    .topic-card:focus-visible {
-        outline: 3px solid var(--accent-soft);
-        outline-offset: 4px;
-    }
+.topic-card.gradient-history {
+    --card-accent: #d97706;
+    --card-accent-soft: rgba(217, 119, 6, 0.08);
+    background: linear-gradient(135deg, var(--surface-main), rgba(217, 119, 6, 0.02));
+}
+:root[data-theme="dark"] .topic-card.gradient-history {
+    background: linear-gradient(135deg, var(--surface-main), rgba(217, 119, 6, 0.04));
+    border-color: rgba(217, 119, 6, 0.15);
+}
+
+.topic-card.gradient-architecture {
+    --card-accent: #0284c7;
+    --card-accent-soft: rgba(2, 132, 199, 0.08);
+    background: linear-gradient(135deg, var(--surface-main), rgba(2, 132, 199, 0.02));
+}
+:root[data-theme="dark"] .topic-card.gradient-architecture {
+    background: linear-gradient(135deg, var(--surface-main), rgba(2, 132, 199, 0.04));
+    border-color: rgba(2, 132, 199, 0.15);
+}
+
+.topic-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--card-accent);
+    box-shadow: var(--shadow-strong);
+}
+
+.topic-card:focus-visible {
+    outline: 3px solid var(--card-accent-soft);
+    outline-offset: 4px;
+}
+
+/* ベクターアイコン */
+.topic-card-icon {
+    color: var(--card-accent);
+    background: var(--card-accent-soft);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    transition: transform 200ms ease;
+}
+
+.topic-card:hover .topic-card-icon {
+    transform: scale(1.08);
+}
 
 /* カード番号 */
 .topic-card-index {
     width: fit-content;
-    padding: 5px 9px;
+    padding: 4px 10px;
     border-radius: 999px;
-    color: var(--accent-color);
-    background: var(--accent-soft);
+    color: var(--card-accent);
+    background: var(--card-accent-soft);
     font-size: 0.72rem;
-    font-weight: 850;
+    font-weight: 800;
     letter-spacing: 0.08em;
+    margin-bottom: 12px;
 }
 
 /* カードタイトル */
@@ -91,21 +151,21 @@
     margin-top: auto;
     color: var(--text-primary);
     font-size: 1.38rem;
-    font-weight: 850;
+    font-weight: 800;
     letter-spacing: -0.035em;
 }
 
 /* カード説明 */
 .topic-card-description {
-    margin-top: 10px;
+    margin-top: 8px;
     color: var(--text-secondary);
     font-size: 0.9rem;
-    line-height: 1.75;
+    line-height: 1.6;
 }
 
 /* カード下部 */
 .topic-card-footer {
-    margin-top: 22px;
+    margin-top: 20px;
     padding-top: 14px;
     border-top: 1px solid var(--border-color);
     display: flex;
@@ -114,8 +174,24 @@
     gap: 12px;
     color: var(--text-muted);
     font-size: 0.78rem;
-    font-weight: 750;
+    font-weight: 700;
 }
+
+.topic-card-footer span:last-child {
+    color: var(--card-accent);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: transform 160ms ease;
+}
+
+.topic-card:hover .topic-card-footer span:last-child {
+    transform: translateX(4px);
+}
+
+/* ================================
+   Modal (モーダル)
+   ================================ */
 
 /* モーダル背景 */
 .topic-modal-backdrop {
@@ -126,8 +202,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(15, 23, 42, 0.56);
-    backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    animation: modalBackdropFade 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* モーダル本体 */
@@ -142,11 +219,28 @@
     box-shadow: var(--shadow-strong);
     display: flex;
     flex-direction: column;
+    animation: modalScaleIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes modalBackdropFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalScaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 /* モーダル上部 */
 .topic-modal-header {
-    padding: 20px 22px;
+    padding: 20px 24px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -155,46 +249,61 @@
     background: var(--surface-sub);
 }
 
-    .topic-modal-header h2 {
-        margin: 0;
-        color: var(--text-primary);
-        font-size: clamp(1.35rem, 2.4vw, 1.9rem);
-        line-height: 1.25;
-        letter-spacing: -0.03em;
-    }
+.topic-modal-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+    line-height: 1.25;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topic-modal-icon {
+    color: var(--accent-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .topic-modal-kicker {
     margin: 0 0 6px;
     color: var(--accent-color);
     font-size: 0.68rem;
-    font-weight: 850;
+    font-weight: 800;
     letter-spacing: 0.13em;
     text-transform: uppercase;
 }
 
 /* 閉じるボタン */
 .topic-modal-close {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
     border: 1px solid var(--border-color);
     border-radius: 999px;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     background: var(--surface-main);
-    font-size: 1.25rem;
-    line-height: 1;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
 }
 
-    .topic-modal-close:hover {
-        border-color: var(--accent-color);
-        color: var(--accent-color);
-    }
+.topic-modal-close:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: var(--surface-muted);
+}
 
-    .topic-modal-close:focus-visible {
-        outline: 3px solid var(--accent-soft);
-        outline-offset: 3px;
-    }
+.topic-modal-close:focus-visible {
+    outline: 3px solid var(--accent-soft);
+    outline-offset: 3px;
+}
 
 /* モーダル中央 */
 .topic-modal-body {
@@ -212,63 +321,80 @@
     align-content: start;
     border-right: 1px solid var(--border-color);
     background: var(--surface-sub);
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 /* 記事ボタン */
 .topic-article-button {
     width: 100%;
-    padding: 12px 13px;
+    padding: 12px 14px;
     border: 1px solid var(--border-color);
     border-radius: 12px;
     color: var(--text-secondary);
     background: var(--surface-main);
     text-align: left;
     cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 750;
-    transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: border-color 140ms ease, color 140ms ease, background 140ms ease, transform 140ms ease;
 }
 
-    .topic-article-button:hover {
-        border-color: var(--accent-color);
-        color: var(--text-primary);
-    }
+.topic-article-button:hover {
+    border-color: var(--accent-color);
+    color: var(--text-primary);
+    transform: translateX(2px);
+}
 
-    .topic-article-button.is-selected {
-        border-color: var(--accent-color);
-        color: var(--accent-color);
-        background: var(--accent-soft);
-    }
+.topic-article-button.is-selected {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: var(--accent-soft);
+}
 
-    .topic-article-button:focus-visible {
-        outline: 3px solid var(--accent-soft);
-        outline-offset: 3px;
-    }
+.topic-article-button:focus-visible {
+    outline: 3px solid var(--accent-soft);
+    outline-offset: 3px;
+}
 
 /* 記事本文 */
 .topic-article-content {
     min-height: 0;
     padding: 28px;
     overflow-y: auto;
-    overflow-y: scroll;
 }
 
-    .topic-article-content h3 {
-        margin: 0 0 14px;
-        color: var(--text-primary);
-        font-size: clamp(1.45rem, 3vw, 2.25rem);
-        line-height: 1.2;
-        letter-spacing: -0.045em;
-    }
+/* 記事切り替えフェードイン効果 */
+.topic-article-content article {
+    animation: articleFadeIn 250ms ease-out forwards;
+}
 
-    .topic-article-content p {
-        max-width: 62ch;
-        margin: 0;
-        color: var(--text-secondary);
-        font-size: 0.98rem;
-        line-height: 1.95;
+@keyframes articleFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
     }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.topic-article-content h3 {
+    margin: 0 0 14px;
+    color: var(--text-primary);
+    font-size: clamp(1.45rem, 3vw, 2.25rem);
+    line-height: 1.2;
+    letter-spacing: -0.045em;
+    font-weight: 800;
+}
+
+.topic-article-content p {
+    max-width: 62ch;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+    line-height: 1.95;
+}
 
 /* モーダル下部 */
 .topic-modal-footer {
@@ -279,27 +405,31 @@
     background: var(--surface-sub);
 }
 
-    .topic-modal-footer button {
-        padding: 9px 17px;
-        border: 1px solid var(--accent-color);
-        border-radius: 999px;
-        color: #ffffff;
-        background: var(--accent-color);
-        font-size: 0.9rem;
-        font-weight: 850;
-        cursor: pointer;
-        transition: filter 140ms ease, transform 140ms ease;
-    }
+.topic-modal-footer button {
+    padding: 9px 20px;
+    border: 1px solid var(--accent-color);
+    border-radius: 999px;
+    color: #ffffff;
+    background: var(--accent-color);
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: filter 140ms ease, transform 140ms ease;
+}
 
-        .topic-modal-footer button:hover {
-            filter: brightness(1.05);
-            transform: translateY(-1px);
-        }
+.topic-modal-footer button:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
 
-        .topic-modal-footer button:focus-visible {
-            outline: 3px solid var(--accent-soft);
-            outline-offset: 3px;
-        }
+.topic-modal-footer button:focus-visible {
+    outline: 3px solid var(--accent-soft);
+    outline-offset: 3px;
+}
+
+/* ================================
+   Responsive (レスポンシブ)
+   ================================ */
 
 /* タブレット対応 */
 @media (max-width: 900px) {
@@ -309,10 +439,11 @@
 
     .topic-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .topic-card {
-        min-height: 190px;
+        min-height: 180px;
     }
 
     .topic-card-title {
@@ -331,9 +462,9 @@
         margin-bottom: 28px;
     }
 
-        .page-hero h1 {
-            font-size: clamp(1.9rem, 8vw, 2.6rem);
-        }
+    .page-hero h1 {
+        font-size: clamp(1.9rem, 8vw, 2.6rem);
+    }
 
     .page-lead {
         font-size: 0.94rem;
@@ -341,8 +472,8 @@
     }
 
     .topic-card {
-        min-height: 180px;
-        padding: 18px;
+        min-height: 170px;
+        padding: 20px;
     }
 
     .topic-modal-backdrop {
@@ -355,33 +486,107 @@
     }
 
     .topic-modal-header {
-        padding: 18px;
+        padding: 18px 60px 18px 18px; /* 右側に閉じるボタン用の余白を確保して衝突を防ぐ */
+        position: relative;
+    }
+
+    .topic-modal-close {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     .topic-modal-body {
         grid-template-columns: 1fr;
     }
 
+    /* 水平スクロールタブ */
     .topic-article-list {
         display: flex;
         gap: 9px;
         overflow-x: auto;
         border-right: none;
         border-bottom: 1px solid var(--border-color);
+        padding: 12px 24px 12px 16px;
+        /* マスクを使って右端をフェードアウトさせ、スクロール誘導 */
+        -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+        mask-image: linear-gradient(to right, black 85%, transparent 100%);
     }
 
     .topic-article-button {
-        min-width: 132px;
+        width: auto;
+        min-width: max-content; /* 文字数に応じて横幅を自動フィット */
+        padding: 10px 18px; /* 左右の余白を担保してはみ出しを防ぐ */
         white-space: nowrap;
+        text-align: center;
+    }
+    
+    .topic-article-button:hover {
+        transform: none;
     }
 
     .topic-article-content {
         padding: 22px;
     }
 
-        .topic-article-content p {
-            line-height: 1.9;
-        }
+    .topic-article-content p {
+        line-height: 1.9;
+    }
+}
+
+/* 記事本文内の画像 */
+.topic-article-image-container {
+    width: 100%;
+    height: 260px; /* 高さを固定し、レイアウトシフト（ガタつき）を防止 */
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    /* スケルトンローディング効果の背景グラデーション */
+    background: linear-gradient(90deg, 
+        var(--surface-muted) 25%, 
+        var(--border-color) 37%, 
+        var(--surface-muted) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-glow 1.4s ease infinite;
+}
+
+@keyframes skeleton-glow {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* 画像未配置・エラー時のNo Imageテキスト */
+.topic-article-image-container::before {
+    content: "No Image Available";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.topic-article-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 2; /* プレースホルダテキストの上に重ねる */
+    background: var(--surface-main); /* 読み込み完了後に背景を完全に隠す */
 }
 
 /* 動きを減らす設定 */
@@ -389,12 +594,16 @@
     .topic-card,
     .topic-modal-close,
     .topic-article-button,
-    .topic-modal-footer button {
-        transition: none;
+    .topic-modal-footer button,
+    .topic-modal-backdrop,
+    .topic-modal,
+    .topic-article-content article {
+        transition: none !important;
+        animation: none !important;
     }
 
-        .topic-card:hover,
-        .topic-modal-footer button:hover {
-            transform: none;
-        }
+    .topic-card:hover,
+    .topic-modal-footer button:hover {
+        transform: none !important;
+    }
 }
