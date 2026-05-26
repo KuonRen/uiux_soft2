@@ -22,20 +22,20 @@
             </p>
         </section>
 
-        @if (currentHeroImage is not null) {
+        @if (currentHeroItem is not null) {
             <button class="topic-hero"
                     type="button"
-                    @onclick="() => OpenHeroArticle(currentHeroImage)"
-                    aria-label="@($"{currentHeroImage.Title}の記事を開く")">
+                    @onclick="() => OpenHeroArticle(currentHeroItem)"
+                    aria-label="@($"{currentHeroItem.Article.Title}の記事を開く")">
                 <img class="topic-hero-image is-active"
-                     src="@currentHeroImage.ImagePath"
-                     alt="@currentHeroImage.Title"
+                     src="@currentHeroItem.Article.ImagePath"
+                     alt="@currentHeroItem.Article.Title"
                      onerror="this.style.display='none'" />
 
-                @if (nextHeroImage is not null) {
-                    <img @key="nextHeroImage.ImagePath"
+                @if (nextHeroItem is not null) {
+                    <img @key="nextHeroItem.Article.ImagePath"
                          class="topic-hero-image is-next"
-                         src="@nextHeroImage.ImagePath"
+                         src="@nextHeroItem.Article.ImagePath"
                          alt=""
                          @onload="ShowNextHeroImage"
                          onerror="this.style.display='none'" />
@@ -43,8 +43,8 @@
 
                 <div class="topic-hero-caption">
                     <span>Topic Image</span>
-                    <strong>@currentHeroImage.Title</strong>
-                    <em>@GetArticleTopicTitle(currentHeroImage)</em>
+                    <strong>@currentHeroItem.Article.Title</strong>
+                    <em>@currentHeroItem.Topic.Title</em>
                 </div>
             </button>
         }
@@ -219,21 +219,22 @@
     private bool isModalOpen;
     private bool _shouldSetupTrap;
     private string? previewImageUrl;
-    private List<TopicArticle> heroImages = new();
-    private TopicArticle? currentHeroImage;
-    private TopicArticle? nextHeroImage;
+    private List<HeroImageItem> heroItems = new();
+    private HeroImageItem? currentHeroItem;
+    private HeroImageItem? nextHeroItem;
     private readonly Random random = new();
     private CancellationTokenSource? heroRotationCancellation;
 
     protected override void OnInitialized() {
         topics = DataService.GetTopics();
-        heroImages = topics
-            .SelectMany(topic => topic.Articles)
-            .Where(article => !string.IsNullOrWhiteSpace(article.ImagePath))
+        heroItems = topics
+            .SelectMany(topic => topic.Articles
+                .Where(article => !string.IsNullOrWhiteSpace(article.ImagePath))
+                .Select(article => new HeroImageItem(topic, article)))
             .ToList();
-        currentHeroImage = GetNextHeroImage();
+        currentHeroItem = GetNextHeroItem();
 
-        if (heroImages.Count > 1) {
+        if (heroItems.Count > 1) {
             heroRotationCancellation = new CancellationTokenSource();
             _ = RotateHeroImagesAsync(heroRotationCancellation.Token);
         }
@@ -247,14 +248,9 @@
         _shouldSetupTrap = true; // 次のレンダリングでフォーカストラップを実行するフラグ
     }
 
-    private void OpenHeroArticle(TopicArticle article) {
-        var topic = topics.FirstOrDefault(topic => topic.Articles.Contains(article));
-        if (topic is null) {
-            return;
-        }
-
-        selectedTopic = topic;
-        selectedArticle = article;
+    private void OpenHeroArticle(HeroImageItem item) {
+        selectedTopic = item.Topic;
+        selectedArticle = item.Article;
         isModalOpen = true;
         _shouldSetupTrap = true;
     }
@@ -300,21 +296,21 @@
             : "topic-article-button";
     }
 
-    private TopicArticle? GetNextHeroImage() {
-        if (heroImages.Count == 0) {
+    private HeroImageItem? GetNextHeroItem() {
+        if (heroItems.Count == 0) {
             return null;
         }
 
-        if (heroImages.Count == 1) {
-            return heroImages[0];
+        if (heroItems.Count == 1) {
+            return heroItems[0];
         }
 
-        TopicArticle nextImage;
+        HeroImageItem nextItem;
         do {
-            nextImage = heroImages[random.Next(heroImages.Count)];
-        } while (nextImage == currentHeroImage || nextImage == nextHeroImage);
+            nextItem = heroItems[random.Next(heroItems.Count)];
+        } while (nextItem == currentHeroItem || nextItem == nextHeroItem);
 
-        return nextImage;
+        return nextItem;
     }
 
     private async Task RotateHeroImagesAsync(CancellationToken cancellationToken) {
@@ -322,7 +318,7 @@
 
         try {
             while (await timer.WaitForNextTickAsync(cancellationToken)) {
-                nextHeroImage = GetNextHeroImage();
+                nextHeroItem = GetNextHeroItem();
                 await InvokeAsync(StateHasChanged);
             }
         } catch (OperationCanceledException) {
@@ -330,20 +326,18 @@
     }
 
     private void ShowNextHeroImage() {
-        if (nextHeroImage is null) {
+        if (nextHeroItem is null) {
             return;
         }
 
-        currentHeroImage = nextHeroImage;
-        nextHeroImage = null;
-    }
-
-    private string GetArticleTopicTitle(TopicArticle article) {
-        return topics.FirstOrDefault(topic => topic.Articles.Contains(article))?.Title ?? "";
+        currentHeroItem = nextHeroItem;
+        nextHeroItem = null;
     }
 
     public void Dispose() {
         heroRotationCancellation?.Cancel();
         heroRotationCancellation?.Dispose();
     }
+
+    private sealed record HeroImageItem(TopicItem Topic, TopicArticle Article);
 }

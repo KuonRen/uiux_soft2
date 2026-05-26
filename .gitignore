@@ -369,3 +369,10 @@ FodyWeavers.xsd
 !wwwroot/favicon.png
 !wwwroot/images/osaka_icon.png
 !wwwroot/images/topic/*.avif
+
+# Presentation outputs
+*.pptx
+create_presentation.ps1
+
+# Static GitHub Pages deployment does not use ASP.NET Core appsettings files.
+appsettings*.json
