@@ -22,19 +22,28 @@
             </p>
         </section>
 
-        @if (heroImage is not null) {
+        @if (currentHeroImage is not null) {
             <button class="topic-hero"
                     type="button"
-                    @onclick="() => OpenHeroArticle(heroImage)"
-                    aria-label="@($"{heroImage.Title}の記事を開く")">
-                <img @key="heroImage.ImagePath"
-                     src="@heroImage.ImagePath"
-                     alt="@heroImage.Title"
+                    @onclick="() => OpenHeroArticle(currentHeroImage)"
+                    aria-label="@($"{currentHeroImage.Title}の記事を開く")">
+                <img class="topic-hero-image is-active"
+                     src="@currentHeroImage.ImagePath"
+                     alt="@currentHeroImage.Title"
                      onerror="this.style.display='none'" />
+
+                @if (nextHeroImage is not null) {
+                    <img @key="nextHeroImage.ImagePath"
+                         class="topic-hero-image is-next"
+                         src="@nextHeroImage.ImagePath"
+                         alt=""
+                         @onload="ShowNextHeroImage"
+                         onerror="this.style.display='none'" />
+                }
 
                 <div class="topic-hero-caption">
                     <span>Topic Image</span>
-                    <strong>@heroImage.Title</strong>
+                    <strong>@currentHeroImage.Title</strong>
                 </div>
             </button>
         }
@@ -210,7 +219,8 @@
     private bool _shouldSetupTrap;
     private string? previewImageUrl;
     private List<TopicArticle> heroImages = new();
-    private TopicArticle? heroImage;
+    private TopicArticle? currentHeroImage;
+    private TopicArticle? nextHeroImage;
     private readonly Random random = new();
     private CancellationTokenSource? heroRotationCancellation;
 
@@ -220,7 +230,7 @@
             .SelectMany(topic => topic.Articles)
             .Where(article => !string.IsNullOrWhiteSpace(article.ImagePath))
             .ToList();
-        heroImage = GetNextHeroImage();
+        currentHeroImage = GetNextHeroImage();
 
         if (heroImages.Count > 1) {
             heroRotationCancellation = new CancellationTokenSource();
@@ -301,7 +311,7 @@
         TopicArticle nextImage;
         do {
             nextImage = heroImages[random.Next(heroImages.Count)];
-        } while (nextImage == heroImage);
+        } while (nextImage == currentHeroImage || nextImage == nextHeroImage);
 
         return nextImage;
     }
@@ -311,11 +321,20 @@
 
         try {
             while (await timer.WaitForNextTickAsync(cancellationToken)) {
-                heroImage = GetNextHeroImage();
+                nextHeroImage = GetNextHeroImage();
                 await InvokeAsync(StateHasChanged);
             }
         } catch (OperationCanceledException) {
         }
+    }
+
+    private void ShowNextHeroImage() {
+        if (nextHeroImage is null) {
+            return;
+        }
+
+        currentHeroImage = nextHeroImage;
+        nextHeroImage = null;
     }
 
     public void Dispose() {
