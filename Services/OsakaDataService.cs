@@ -6,7 +6,7 @@ public class OsakaDataService
 {
     public List<TopicItem> GetTopics()
     {
-        return new List<TopicItem>
+        var topics = new List<TopicItem>
         {
             new TopicItem
             {
@@ -222,5 +222,12 @@ public class OsakaDataService
                 }
             }
         };
+
+        foreach (var article in topics.SelectMany(topic => topic.Articles))
+        {
+            article.Id = Path.GetFileNameWithoutExtension(article.ImagePath);
+        }
+
+        return topics;
     }
 }

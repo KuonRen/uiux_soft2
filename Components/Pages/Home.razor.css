@@ -534,8 +534,28 @@
     padding: 15px 20px;
     border-top: 1px solid var(--border-color);
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
     background: var(--surface-sub);
+}
+
+.topic-article-direct-link {
+    color: var(--accent-color);
+    font-size: 0.84rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.topic-article-direct-link:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
+.topic-article-direct-link:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
 }
 
 .topic-modal-footer button {

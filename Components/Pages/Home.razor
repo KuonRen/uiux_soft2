@@ -1,9 +1,11 @@
 @page "/"
+@page "/article/{ArticleId}"
 @using uiux.Models
 @using uiux.Services
 @implements IDisposable
 @inject OsakaDataService DataService
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <PageTitle>大阪紹介</PageTitle>
 
@@ -187,6 +189,11 @@
                 </div>
 
                 <div class="topic-modal-footer">
+                    <a class="topic-article-direct-link"
+                       href="@GetArticleHref(selectedArticle)">
+                        この記事のリンク
+                    </a>
+
                     <button type="button" @onclick="CloseModal">
                         閉じる
                     </button>
@@ -213,11 +220,15 @@
 </section>
 
 @code {
+    [Parameter]
+    public string? ArticleId { get; set; }
+
     private List<TopicItem> topics = new();
     private TopicItem? selectedTopic;
     private TopicArticle? selectedArticle;
     private bool isModalOpen;
     private bool _shouldSetupTrap;
+    private bool _shouldRemoveTrap;
     private string? previewImageUrl;
     private List<HeroImageItem> heroItems = new();
     private HeroImageItem? currentHeroItem;
@@ -238,24 +249,47 @@
             heroRotationCancellation = new CancellationTokenSource();
             _ = RotateHeroImagesAsync(heroRotationCancellation.Token);
         }
+
+        if (!string.IsNullOrWhiteSpace(ArticleId)) {
+            OpenArticleById(ArticleId);
+        }
+    }
+
+    protected override void OnParametersSet() {
+        if (topics.Count == 0) {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(ArticleId)) {
+            if (isModalOpen) {
+                ResetModalState();
+                _shouldRemoveTrap = true;
+            }
+
+            return;
+        }
+
+        OpenArticleById(ArticleId);
     }
 
     // カードクリック時にモーダルを開く
     private void OpenModal(TopicItem topic) {
-        selectedTopic = topic;
-        selectedArticle = topic.Articles.FirstOrDefault();
-        isModalOpen = true;
-        _shouldSetupTrap = true; // 次のレンダリングでフォーカストラップを実行するフラグ
+        var firstArticle = topic.Articles.FirstOrDefault();
+        if (firstArticle is not null) {
+            NavigateToArticle(firstArticle);
+        }
     }
 
     private void OpenHeroArticle(HeroImageItem item) {
-        selectedTopic = item.Topic;
-        selectedArticle = item.Article;
-        isModalOpen = true;
-        _shouldSetupTrap = true;
+        NavigateToArticle(item.Article);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (_shouldRemoveTrap) {
+            _shouldRemoveTrap = false;
+            await JSRuntime.InvokeVoidAsync("window.appModal.removeFocusTrap", ".topic-modal");
+        }
+
         if (_shouldSetupTrap && isModalOpen) {
             _shouldSetupTrap = false;
             // BlazorのDOMレンダリングが完了した後に、JSで確実にフォーカストラップをセットアップする
@@ -265,18 +299,15 @@
 
     // 記事ボタンクリック時に本文を切り替える
     private void SelectArticle(TopicArticle article) {
-        selectedArticle = article;
+        NavigateToArticle(article);
     }
 
     // モーダルを閉じて選択状態をリセットする
     private async Task CloseModal() {
         // フォーカストラップを解除
         await JSRuntime.InvokeVoidAsync("window.appModal.removeFocusTrap", ".topic-modal");
-        
-        isModalOpen = false;
-        selectedTopic = null;
-        selectedArticle = null;
-        previewImageUrl = null;
+        ResetModalState();
+        NavigationManager.NavigateTo(NavigationManager.BaseUri);
     }
 
     // プレビュー表示
@@ -294,6 +325,45 @@
         return selectedArticle == article
             ? "topic-article-button is-selected"
             : "topic-article-button";
+    }
+
+    private void NavigateToArticle(TopicArticle article) {
+        NavigationManager.NavigateTo(GetArticleHref(article));
+    }
+
+    private string GetArticleHref(TopicArticle article) {
+        return $"{NavigationManager.BaseUri}article/{article.Id}";
+    }
+
+    private void OpenArticleById(string articleId) {
+        foreach (var topic in topics) {
+            var article = topic.Articles.FirstOrDefault(article =>
+                string.Equals(article.Id, articleId, StringComparison.OrdinalIgnoreCase));
+
+            if (article is null) {
+                continue;
+            }
+
+            selectedTopic = topic;
+            selectedArticle = article;
+            previewImageUrl = null;
+
+            if (!isModalOpen) {
+                isModalOpen = true;
+                _shouldSetupTrap = true;
+            }
+
+            return;
+        }
+
+        ResetModalState();
+    }
+
+    private void ResetModalState() {
+        isModalOpen = false;
+        selectedTopic = null;
+        selectedArticle = null;
+        previewImageUrl = null;
     }
 
     private HeroImageItem? GetNextHeroItem() {

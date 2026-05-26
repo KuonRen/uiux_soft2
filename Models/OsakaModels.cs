@@ -12,6 +12,7 @@ public class TopicItem
 
 public class TopicArticle
 {
+    public string Id { get; set; } = "";
     public string Title { get; set; } = "";
     public string Body { get; set; } = "";
     public string ImagePath { get; set; } = "";
