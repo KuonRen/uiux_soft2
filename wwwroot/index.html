@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>大阪紹介</title>
+    <base href="/" />
+
+    <script>
+        (() => {
+            const storageKey = "uiux-theme";
+
+            function normalizeTheme(theme) {
+                return theme === "dark" ? "dark" : "light";
+            }
+
+            function getSystemTheme() {
+                return window.matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "dark"
+                    : "light";
+            }
+
+            function getStoredTheme() {
+                try {
+                    return localStorage.getItem(storageKey);
+                } catch {
+                    return null;
+                }
+            }
+
+            function saveTheme(theme) {
+                try {
+                    localStorage.setItem(storageKey, theme);
+                } catch {
+                }
+            }
+
+            function getTheme() {
+                const storedTheme = getStoredTheme();
+                const htmlTheme = document.documentElement.getAttribute("data-theme");
+                const theme = storedTheme || htmlTheme || getSystemTheme();
+
+                return normalizeTheme(theme);
+            }
+
+            function updateToggleLabel(theme) {
+                const labels = document.querySelectorAll("[data-theme-label]");
+                const buttons = document.querySelectorAll("[data-theme-toggle]");
+
+                labels.forEach((label) => {
+                    label.textContent = theme === "dark" ? "Dark" : "Light";
+                });
+
+                buttons.forEach((button) => {
+                    button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+                });
+            }
+
+            function applyTheme(theme) {
+                const normalizedTheme = normalizeTheme(theme);
+
+                document.documentElement.setAttribute("data-theme", normalizedTheme);
+                document.documentElement.style.colorScheme = normalizedTheme;
+
+                updateToggleLabel(normalizedTheme);
+
+                return normalizedTheme;
+            }
+
+            function setTheme(theme) {
+                const normalizedTheme = applyTheme(theme);
+
+                saveTheme(normalizedTheme);
+
+                return normalizedTheme;
+            }
+
+            function initTheme() {
+                const theme = getStoredTheme() || getSystemTheme();
+
+                applyTheme(theme);
+            }
+
+            function toggleTheme() {
+                const currentTheme = getTheme();
+                const nextTheme = currentTheme === "dark" ? "light" : "dark";
+
+                setTheme(nextTheme);
+            }
+
+            initTheme();
+
+            window.appTheme = {
+                getTheme,
+                setTheme,
+                applyTheme,
+                initTheme,
+                toggleTheme
+            };
+        })();
+    </script>
+
+    <link rel="preload" id="webassembly" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="uiux.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <script type="importmap"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="app-loading">Loading...</div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">x</span>
+    </div>
+
+    <script>
+        window.addEventListener("pageshow", () => {
+            window.appTheme.initTheme();
+        });
+
+        window.appModal = {
+            setupFocusTrap: function (modalSelector) {
+                const modal = document.querySelector(modalSelector);
+                if (!modal) return;
+
+                window.appModal._lastFocusedElement = document.activeElement;
+                document.body.classList.add("modal-open");
+
+                const focusableElements = modal.querySelectorAll("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
+                if (focusableElements.length === 0) return;
+
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+                const closeBtn = modal.querySelector(".topic-modal-close");
+
+                if (closeBtn) {
+                    closeBtn.focus();
+                } else {
+                    firstElement.focus();
+                }
+
+                const handleKeyDown = function (e) {
+                    if (e.key === "Tab") {
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstElement) {
+                                lastElement.focus();
+                                e.preventDefault();
+                            }
+                        } else if (document.activeElement === lastElement) {
+                            firstElement.focus();
+                            e.preventDefault();
+                        }
+                    } else if (e.key === "Escape" && closeBtn) {
+                        closeBtn.click();
+                    }
+                };
+
+                modal._focusTrapListener = handleKeyDown;
+                modal.addEventListener("keydown", handleKeyDown);
+            },
+            removeFocusTrap: function (modalSelector) {
+                document.body.classList.remove("modal-open");
+
+                const modal = document.querySelector(modalSelector);
+                if (modal && modal._focusTrapListener) {
+                    modal.removeEventListener("keydown", modal._focusTrapListener);
+                    delete modal._focusTrapListener;
+                }
+
+                if (window.appModal._lastFocusedElement && typeof window.appModal._lastFocusedElement.focus === "function") {
+                    window.appModal._lastFocusedElement.focus();
+                    delete window.appModal._lastFocusedElement;
+                }
+            }
+        };
+    </script>
+
+    <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
+</body>
+
+</html>

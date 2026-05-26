@@ -366,3 +366,6 @@ FodyWeavers.xsd
 *.png
 *.jpg
 *.avif
+!wwwroot/favicon.png
+!wwwroot/images/osaka_icon.png
+!wwwroot/images/topic/*.avif
