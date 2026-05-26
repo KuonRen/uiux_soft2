@@ -16,14 +16,16 @@
 .site-header {
     width: 100%;
     border-bottom: 1px solid var(--border-color);
-    background: var(--page-bg);
+    background: color-mix(in srgb, var(--surface-main) 88%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 /* ヘッダー内側 */
 .site-header-inner {
     width: min(1120px, calc(100% - 32px));
     margin: 0 auto;
-    min-height: 72px;
+    min-height: 76px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -38,6 +40,7 @@
     color: var(--text-primary);
     text-decoration: none;
     flex-shrink: 0;
+    border-radius: var(--radius-md);
 }
 
 /* ブランド hover */
@@ -48,11 +51,12 @@
 
 /* ブランド画像 */
 .site-brand-logo {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     display: block;
     object-fit: contain;
     flex-shrink: 0;
+    border-radius: var(--radius-sm);
 }
 
 /* ブランド文字全体 */
@@ -65,9 +69,9 @@
 /* ブランドタイトル */
 .site-brand-title {
     color: var(--text-primary);
-    font-size: 0.98rem;
+    font-size: 1rem;
     font-weight: 800;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
 }
 
 /* ブランドサブタイトル */
@@ -75,22 +79,22 @@
     color: var(--text-muted);
     font-size: 0.72rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
 }
 
 /* テーマ切り替えボタン */
 .theme-toggle {
-    min-width: 96px;
-    padding: 9px 14px;
+    min-width: 104px;
+    padding: 8px 12px;
     border: 1px solid var(--border-color);
-    border-radius: 999px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
-    background: var(--surface-main);
+    background: var(--surface-raised);
     font-size: 0.82rem;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: var(--shadow-soft);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
@@ -104,11 +108,12 @@
 .theme-toggle:hover {
     transform: translateY(-1px);
     border-color: var(--accent-color);
+    color: var(--accent-color);
 }
 
 /* キーボード操作時 */
 .theme-toggle:focus-visible {
-    outline: 3px solid var(--accent-soft);
+    outline: 3px solid var(--focus-ring);
     outline-offset: 3px;
 }
 
@@ -146,7 +151,7 @@
 .site-footer-inner {
     width: min(1120px, calc(100% - 32px));
     margin: 0 auto;
-    padding: 22px 0;
+    padding: 24px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -157,7 +162,7 @@
 .site-footer-title {
     margin: 0;
     color: var(--text-primary);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 850;
 }
 
@@ -166,7 +171,7 @@
     max-width: 560px;
     margin: 0;
     color: var(--text-muted);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     line-height: 1.7;
     text-align: right;
 }
@@ -249,19 +254,6 @@
     .site-footer-text {
         max-width: none;
         text-align: center;
-    }
-}
-
-/* PCでのレイアウト固定 (全体スクロールの防止とプレミアムな固定ヘッダー・フッター) */
-@media (min-width: 901px) {
-    .app-shell {
-        height: 100vh;
-        overflow: hidden;
-    }
-    .site-main {
-        overflow-y: auto;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
     }
 }
 

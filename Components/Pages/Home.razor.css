@@ -2,13 +2,114 @@
 .page-container {
     width: min(1040px, calc(100% - 32px));
     margin: 0 auto;
-    padding: 48px 0 72px;
+    padding: 44px 0 72px;
 }
 
 /* ヒーロー */
+.home-hero-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    gap: 28px;
+    align-items: stretch;
+    margin-bottom: 34px;
+}
+
 .page-hero {
     max-width: 720px;
-    margin-bottom: 34px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.topic-hero {
+    min-height: 280px;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    position: relative;
+    isolation: isolate;
+    background: var(--surface-muted);
+    cursor: pointer;
+    text-align: left;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.topic-hero:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow-strong);
+}
+
+.topic-hero:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 4px;
+}
+
+.topic-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.08) 64%, transparent);
+    pointer-events: none;
+}
+
+.topic-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    animation: heroImageFlow 4s ease-in-out both;
+    transition: transform 220ms ease;
+}
+
+.topic-hero:hover img {
+    transform: scale(1.04);
+}
+
+.topic-hero-caption {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 16px;
+    z-index: 3;
+    color: #ffffff;
+    text-shadow: 0 1px 12px rgba(2, 6, 23, 0.46);
+}
+
+.topic-hero-caption span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.78;
+}
+
+.topic-hero-caption strong {
+    display: block;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    font-weight: 800;
+}
+
+@keyframes heroImageFlow {
+    from {
+        opacity: 0;
+        transform: scale(1.06);
+    }
+    16% {
+        opacity: 1;
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* 小見出し */
@@ -17,7 +118,7 @@
     color: var(--accent-color);
     font-size: 0.74rem;
     font-weight: 800;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
@@ -27,7 +128,7 @@
     color: var(--text-primary);
     font-size: clamp(2rem, 4.2vw, 3.6rem);
     line-height: 1.15;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.035em;
     font-weight: 800;
 }
 
@@ -44,7 +145,7 @@
 .topic-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px; /* 16px から 20px に少し広げてゆとりを持たせる */
+    gap: 18px;
     scroll-margin-top: 32px;
 }
 
@@ -52,14 +153,14 @@
 .topic-card {
     --card-accent: var(--accent-color);
     --card-accent-soft: var(--accent-soft);
-    min-height: 240px;
-    padding: 24px;
+    min-height: 232px;
+    padding: 22px;
     border: 1px solid var(--border-color);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     color: var(--text-primary);
-    background: var(--surface-main);
-    backdrop-filter: blur(20px); /* 磨りガラスによる高級感 */
-    -webkit-backdrop-filter: blur(20px);
+    background: var(--surface-raised);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     box-shadow: var(--shadow-soft);
     display: flex;
     flex-direction: column;
@@ -67,7 +168,7 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), 
+    transition: transform 180ms ease, 
                 box-shadow 200ms ease, 
                 border-color 200ms ease, 
                 background 200ms ease;
@@ -76,42 +177,42 @@
 /* トピックごとのグラデーション & 装飾 */
 .topic-card.gradient-spots {
     --card-accent: #f97316;
-    --card-accent-soft: rgba(249, 115, 22, 0.08);
-    background: linear-gradient(135deg, var(--surface-main), rgba(249, 115, 22, 0.02));
+    --card-accent-soft: rgba(249, 115, 22, 0.12);
+    background: linear-gradient(135deg, var(--surface-raised), rgba(249, 115, 22, 0.06));
 }
 :root[data-theme="dark"] .topic-card.gradient-spots {
-    background: linear-gradient(135deg, var(--surface-main), rgba(249, 115, 22, 0.04));
-    border-color: rgba(249, 115, 22, 0.15); /* 枠線が美しく光るような効果 */
+    background: linear-gradient(135deg, var(--surface-raised), rgba(249, 115, 22, 0.09));
+    border-color: rgba(249, 115, 22, 0.22);
 }
 
 .topic-card.gradient-history {
     --card-accent: #d97706;
-    --card-accent-soft: rgba(217, 119, 6, 0.08);
-    background: linear-gradient(135deg, var(--surface-main), rgba(217, 119, 6, 0.02));
+    --card-accent-soft: rgba(217, 119, 6, 0.12);
+    background: linear-gradient(135deg, var(--surface-raised), rgba(217, 119, 6, 0.06));
 }
 :root[data-theme="dark"] .topic-card.gradient-history {
-    background: linear-gradient(135deg, var(--surface-main), rgba(217, 119, 6, 0.04));
-    border-color: rgba(217, 119, 6, 0.15);
+    background: linear-gradient(135deg, var(--surface-raised), rgba(217, 119, 6, 0.09));
+    border-color: rgba(217, 119, 6, 0.22);
 }
 
-.topic-card.gradient-architecture {
-    --card-accent: #0284c7;
-    --card-accent-soft: rgba(2, 132, 199, 0.08);
-    background: linear-gradient(135deg, var(--surface-main), rgba(2, 132, 199, 0.02));
+.topic-card.gradient-food {
+    --card-accent: #e11d48;
+    --card-accent-soft: rgba(225, 29, 72, 0.12);
+    background: linear-gradient(135deg, var(--surface-raised), rgba(225, 29, 72, 0.06));
 }
-:root[data-theme="dark"] .topic-card.gradient-architecture {
-    background: linear-gradient(135deg, var(--surface-main), rgba(2, 132, 199, 0.04));
-    border-color: rgba(2, 132, 199, 0.15);
+:root[data-theme="dark"] .topic-card.gradient-food {
+    background: linear-gradient(135deg, var(--surface-raised), rgba(225, 29, 72, 0.09));
+    border-color: rgba(225, 29, 72, 0.22);
 }
 
 .topic-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     border-color: var(--card-accent);
     box-shadow: var(--shadow-strong);
 }
 
 .topic-card:focus-visible {
-    outline: 3px solid var(--card-accent-soft);
+    outline: 3px solid var(--focus-ring);
     outline-offset: 4px;
 }
 
@@ -121,7 +222,7 @@
     background: var(--card-accent-soft);
     width: 42px;
     height: 42px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,7 +231,7 @@
 }
 
 .topic-card:hover .topic-card-icon {
-    transform: scale(1.08);
+    transform: scale(1.04);
 }
 
 /* カード番号 */
@@ -152,7 +253,7 @@
     color: var(--text-primary);
     font-size: 1.38rem;
     font-weight: 800;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.025em;
 }
 
 /* カード説明 */
@@ -203,7 +304,7 @@
     align-items: center;
     justify-content: center;
     background: var(--modal-overlay);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
     animation: modalBackdropFade 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -212,7 +313,7 @@
     width: min(860px, 100%);
     max-height: min(680px, 88vh);
     border: 1px solid var(--border-color);
-    border-radius: 22px;
+    border-radius: var(--radius-xl);
     overflow: hidden;
     color: var(--text-primary);
     background: var(--surface-main);
@@ -254,7 +355,7 @@
     color: var(--text-primary);
     font-size: clamp(1.35rem, 2.4vw, 1.9rem);
     line-height: 1.25;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     font-weight: 800;
     display: flex;
     align-items: center;
@@ -274,7 +375,7 @@
     color: var(--accent-color);
     font-size: 0.68rem;
     font-weight: 800;
-    letter-spacing: 0.13em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
@@ -284,9 +385,9 @@
     height: 36px;
     padding: 0;
     border: 1px solid var(--border-color);
-    border-radius: 999px;
+    border-radius: var(--radius-md);
     color: var(--text-secondary);
-    background: var(--surface-main);
+    background: var(--surface-raised);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -302,7 +403,7 @@
 }
 
 .topic-modal-close:focus-visible {
-    outline: 3px solid var(--accent-soft);
+    outline: 3px solid var(--focus-ring);
     outline-offset: 3px;
 }
 
@@ -330,9 +431,9 @@
     width: 100%;
     padding: 12px 14px;
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     color: var(--text-secondary);
-    background: var(--surface-main);
+    background: var(--surface-raised);
     text-align: left;
     cursor: pointer;
     font-size: 0.88rem;
@@ -349,11 +450,11 @@
 .topic-article-button.is-selected {
     border-color: var(--accent-color);
     color: var(--accent-color);
-    background: var(--accent-soft);
+    background: var(--accent-surface);
 }
 
 .topic-article-button:focus-visible {
-    outline: 3px solid var(--accent-soft);
+    outline: 3px solid var(--focus-ring);
     outline-offset: 3px;
 }
 
@@ -385,7 +486,7 @@
     color: var(--text-primary);
     font-size: clamp(1.45rem, 3vw, 2.25rem);
     line-height: 1.2;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.03em;
     font-weight: 800;
 }
 
@@ -409,7 +510,7 @@
 .topic-modal-footer button {
     padding: 9px 20px;
     border: 1px solid var(--accent-color);
-    border-radius: 999px;
+    border-radius: var(--radius-md);
     color: #ffffff;
     background: var(--accent-color);
     font-size: 0.9rem;
@@ -419,12 +520,13 @@
 }
 
 .topic-modal-footer button:hover {
-    filter: brightness(1.08);
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
     transform: translateY(-1px);
 }
 
 .topic-modal-footer button:focus-visible {
-    outline: 3px solid var(--accent-soft);
+    outline: 3px solid var(--focus-ring);
     outline-offset: 3px;
 }
 
@@ -436,6 +538,19 @@
 @media (max-width: 900px) {
     .page-container {
         width: min(100% - 28px, 720px);
+    }
+
+    .home-hero-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .page-hero {
+        min-height: 0;
+    }
+
+    .topic-hero {
+        min-height: 260px;
     }
 
     .topic-grid {
@@ -460,7 +575,16 @@
     }
 
     .page-hero {
+        min-height: 0;
+    }
+
+    .home-hero-layout {
         margin-bottom: 28px;
+    }
+
+    .topic-hero {
+        min-height: 220px;
+        border-radius: var(--radius-lg);
     }
 
     .page-hero h1 {
@@ -540,7 +664,7 @@
         margin-left: 0;
         margin-right: 0;
         width: 100%;
-        border-radius: 12px;
+        border-radius: var(--radius-md);
         border: 1px solid var(--border-color);
         height: auto;
         aspect-ratio: 16 / 9; /* 比率を美しく保つ */
@@ -559,23 +683,19 @@ button.topic-article-image-container {
     cursor: pointer;
     background: none;
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
     margin-bottom: 20px;
     box-shadow: var(--shadow-soft);
     position: relative;
     /* スケルトンローディング効果の背景グラデーション */
-    background: linear-gradient(90deg, 
-        var(--surface-muted) 25%, 
-        var(--border-color) 37%, 
-        var(--surface-muted) 63%
-    );
+    background: linear-gradient(90deg, var(--surface-muted) 25%, var(--border-color) 37%, var(--surface-muted) 63%);
     background-size: 400% 100%;
     animation: skeleton-glow 1.4s ease infinite;
 }
 
 button.topic-article-image-container:focus-visible {
-    outline: 3px solid var(--accent-soft);
+    outline: 3px solid var(--focus-ring);
     outline-offset: 3px;
 }
 
@@ -639,7 +759,9 @@ button.topic-article-image-container:focus-visible {
     .topic-modal-footer button,
     .topic-modal-backdrop,
     .topic-modal,
-    .topic-article-content article {
+    .topic-article-content article,
+    .topic-hero,
+    .topic-hero img {
         transition: none !important;
         animation: none !important;
     }
@@ -655,7 +777,7 @@ button.topic-article-image-container:focus-visible {
     .page-container {
         padding: 32px 0 40px;
     }
-    .page-hero {
+    .home-hero-layout {
         margin-bottom: 24px;
     }
 }
@@ -679,7 +801,7 @@ button.topic-article-image-container:focus-visible {
     max-width: 90vw;
     max-height: 85vh;
     box-shadow: var(--shadow-strong);
-    border-radius: 20px;
+    border-radius: var(--radius-xl);
     border: 1px solid var(--border-color);
     background: var(--surface-main);
     animation: lightboxZoomIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
@@ -696,7 +818,7 @@ button.topic-article-image-container:focus-visible {
     max-width: 100%;
     max-height: calc(85vh - 96px); /* paddingと余白を差し引いた安全な高さ */
     object-fit: contain;
-    border-radius: 12px; /* プレビュー画像自体も角丸に整えて高級感を出す */
+    border-radius: var(--radius-md);
 }
 
 .image-lightbox-close {
@@ -705,7 +827,7 @@ button.topic-article-image-container:focus-visible {
     right: 12px;
     width: 40px;
     height: 40px;
-    border-radius: 999px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
     background: var(--surface-main);
