@@ -44,6 +44,7 @@
                 <div class="topic-hero-caption">
                     <span>Topic Image</span>
                     <strong>@currentHeroImage.Title</strong>
+                    <em>@GetArticleTopicTitle(currentHeroImage)</em>
                 </div>
             </button>
         }
@@ -335,6 +336,10 @@
 
         currentHeroImage = nextHeroImage;
         nextHeroImage = null;
+    }
+
+    private string GetArticleTopicTitle(TopicArticle article) {
+        return topics.FirstOrDefault(topic => topic.Articles.Contains(article))?.Title ?? "";
     }
 
     public void Dispose() {
