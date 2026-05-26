@@ -142,6 +142,10 @@
     font-weight: 800;
 }
 
+.page-hero h1:focus {
+    outline: none;
+}
+
 /* 説明文 */
 .page-lead {
     max-width: 640px;
