@@ -237,8 +237,8 @@
     private readonly Random random = new();
     private CancellationTokenSource? heroRotationCancellation;
 
-    protected override void OnInitialized() {
-        topics = DataService.GetTopics();
+    protected override async Task OnInitializedAsync() {
+        topics = await DataService.GetTopicsAsync();
         heroItems = topics
             .SelectMany(topic => topic.Articles
                 .Where(article => !string.IsNullOrWhiteSpace(article.ImagePath))
@@ -251,9 +251,7 @@
             _ = RotateHeroImagesAsync(heroRotationCancellation.Token);
         }
 
-        if (!string.IsNullOrWhiteSpace(ArticleId)) {
-            OpenArticleById(ArticleId);
-        }
+        HandleArticleRoute();
     }
 
     protected override void OnParametersSet() {
@@ -261,6 +259,10 @@
             return;
         }
 
+        HandleArticleRoute();
+    }
+
+    private void HandleArticleRoute() {
         if (string.IsNullOrWhiteSpace(ArticleId)) {
             if (isModalOpen) {
                 ResetModalState();
@@ -270,7 +272,9 @@
             return;
         }
 
-        OpenArticleById(ArticleId);
+        if (!OpenArticleById(ArticleId)) {
+            NavigateToNotFound();
+        }
     }
 
     // カードクリック時にモーダルを開く
@@ -336,7 +340,7 @@
         return $"{NavigationManager.BaseUri}article/{article.Id}";
     }
 
-    private void OpenArticleById(string articleId) {
+    private bool OpenArticleById(string articleId) {
         foreach (var topic in topics) {
             var article = topic.Articles.FirstOrDefault(article =>
                 string.Equals(article.Id, articleId, StringComparison.OrdinalIgnoreCase));
@@ -354,10 +358,15 @@
                 _shouldSetupTrap = true;
             }
 
-            return;
+            return true;
         }
 
         ResetModalState();
+        return false;
+    }
+
+    private void NavigateToNotFound() {
+        NavigationManager.NavigateTo($"{NavigationManager.BaseUri}not-found", replace: true);
     }
 
     private void ResetModalState() {
