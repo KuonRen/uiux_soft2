@@ -203,15 +203,15 @@
     border-top: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 16px;
     background: linear-gradient(90deg, var(--surface-sub), color-mix(in srgb, var(--surface-sub) 86%, var(--accent-color)));
 }
 
 .topic-modal-footer button {
-    padding: 9px 20px;
+    padding: 10px 16px;
     border: 1px solid color-mix(in srgb, var(--accent-color) 88%, var(--osaka-gold));
-    border-radius: var(--radius-md);
+    border-radius: 999px;
     color: #ffffff;
     background: linear-gradient(135deg, var(--accent-color), color-mix(in srgb, var(--accent-color) 72%, var(--osaka-pink)));
     font-size: 0.9rem;
@@ -232,22 +232,22 @@
 }
 
 .topic-modal-footer .topic-article-copy-link {
-    padding: 0;
-    border: 0;
-    border-radius: var(--radius-sm);
-    color: var(--osaka-blue);
-    background: transparent;
-    box-shadow: none;
-    font-size: 0.84rem;
+    padding: 10px 16px;
+    border: 1px solid color-mix(in srgb, var(--osaka-blue) 58%, var(--border-color));
+    border-radius: 999px;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--surface-raised), var(--osaka-blue-soft));
+    box-shadow: var(--shadow-soft);
+    font-size: 0.86rem;
     font-weight: 800;
 }
 
 .topic-modal-footer .topic-article-copy-link:hover {
-    color: var(--accent-hover);
-    background: transparent;
-    border-color: transparent;
-    text-decoration: underline;
-    transform: none;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--accent-surface), var(--osaka-blue-soft));
+    border-color: var(--osaka-blue);
+    text-decoration: none;
+    transform: translateY(-1px);
 }
 
 .copy-status {
