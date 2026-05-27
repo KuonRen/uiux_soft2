@@ -190,10 +190,11 @@
                 </div>
 
                 <div class="topic-modal-footer">
-                    <a class="topic-article-direct-link"
-                       href="@GetArticleHref(selectedArticle)">
-                        この記事のリンク
-                    </a>
+                    <button class="topic-article-copy-link"
+                            type="button"
+                            @onclick="() => CopyArticleLinkAsync(selectedArticle)">
+                        @GetCopyLinkLabel(selectedArticle)
+                    </button>
 
                     <button type="button" @onclick="CloseModal">
                         閉じる
@@ -231,6 +232,8 @@
     private bool _shouldSetupTrap;
     private bool _shouldRemoveTrap;
     private string? previewImageUrl;
+    private string? copiedArticleId;
+    private string? copyErrorArticleId;
     private List<HeroImageItem> heroItems = new();
     private HeroImageItem? currentHeroItem;
     private HeroImageItem? nextHeroItem;
@@ -304,6 +307,8 @@
 
     // 記事ボタンクリック時に本文を切り替える
     private void SelectArticle(TopicArticle article) {
+        copiedArticleId = null;
+        copyErrorArticleId = null;
         NavigateToArticle(article);
     }
 
@@ -323,6 +328,29 @@
     // プレビューを閉じる
     private void ClosePreview() {
         previewImageUrl = null;
+    }
+
+    private async Task CopyArticleLinkAsync(TopicArticle article) {
+        try {
+            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", GetArticleHref(article));
+            copiedArticleId = article.Id;
+            copyErrorArticleId = null;
+        } catch (JSException) {
+            copiedArticleId = null;
+            copyErrorArticleId = article.Id;
+        }
+    }
+
+    private string GetCopyLinkLabel(TopicArticle article) {
+        if (copiedArticleId == article.Id) {
+            return "コピーしました";
+        }
+
+        if (copyErrorArticleId == article.Id) {
+            return "コピーできませんでした";
+        }
+
+        return "この記事のリンクをコピー";
     }
 
     // 選択中の記事ボタンだけ見た目を変える
@@ -352,6 +380,8 @@
             selectedTopic = topic;
             selectedArticle = article;
             previewImageUrl = null;
+            copiedArticleId = null;
+            copyErrorArticleId = null;
 
             if (!isModalOpen) {
                 isModalOpen = true;
@@ -374,6 +404,8 @@
         selectedTopic = null;
         selectedArticle = null;
         previewImageUrl = null;
+        copiedArticleId = null;
+        copyErrorArticleId = null;
     }
 
     private HeroImageItem? GetNextHeroItem() {
