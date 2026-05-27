@@ -183,6 +183,40 @@
                 }
             }
         };
+
+        window.appLightbox = {
+            setup: function (contentSelector, closeSelector) {
+                const content = document.querySelector(contentSelector);
+                const closeBtn = document.querySelector(closeSelector);
+                if (!content || !closeBtn) return;
+
+                window.appLightbox.remove();
+                window.appLightbox._lastFocusedElement = document.activeElement;
+
+                content.setAttribute("tabindex", "-1");
+                content.focus();
+
+                const handleKeyDown = function (e) {
+                    if (e.key === "Escape") {
+                        closeBtn.click();
+                    }
+                };
+
+                window.appLightbox._listener = handleKeyDown;
+                document.addEventListener("keydown", handleKeyDown);
+            },
+            remove: function () {
+                if (window.appLightbox._listener) {
+                    document.removeEventListener("keydown", window.appLightbox._listener);
+                    delete window.appLightbox._listener;
+                }
+
+                if (window.appLightbox._lastFocusedElement && typeof window.appLightbox._lastFocusedElement.focus === "function") {
+                    window.appLightbox._lastFocusedElement.focus();
+                    delete window.appLightbox._lastFocusedElement;
+                }
+            }
+        };
     </script>
 
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>

@@ -53,6 +53,14 @@ dotnet run
 dotnet build
 ```
 
+## データ検証
+
+記事IDの重複、必須項目、画像ファイルの存在は次のスクリプトで確認できます。
+
+```powershell
+./scripts/Validate-Content.ps1
+```
+
 ## Publish
 
 初回のみ、Release publishの最適化に使う `wasm-tools` をインストールします。
@@ -69,7 +77,7 @@ dotnet publish uiux_soft2.csproj -c Release
 
 `master` ブランチへpushすると、GitHub ActionsでBlazor WebAssemblyをpublishし、GitHub Pagesへデプロイします。
 
-workflowでは `wasm-tools` をインストールしてからpublishし、`index.html` の `<base href="/">` を `/uiux_soft2/` に置き換え、SPA fallback用に `404.html` を生成します。
+workflowでは `wasm-tools` をインストールし、記事データを検証してからpublishします。その後、`index.html` の `<base href="/">` を `/uiux_soft2/` に置き換え、SPA fallback用に `404.html` を生成します。
 
 ## 主なファイル
 

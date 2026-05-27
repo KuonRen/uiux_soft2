@@ -34,6 +34,10 @@ jobs:
       - name: Install wasm tools
         run: dotnet workload install wasm-tools
 
+      - name: Validate content data
+        shell: pwsh
+        run: ./scripts/Validate-Content.ps1
+
       - name: Publish
         run: dotnet publish uiux_soft2.csproj -c Release -o publish
 

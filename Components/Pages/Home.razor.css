@@ -180,6 +180,48 @@
     scroll-margin-top: 32px;
 }
 
+.topic-status {
+    padding: 28px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    color: var(--text-secondary);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-soft);
+}
+
+.topic-status p {
+    margin: 0;
+    line-height: 1.8;
+}
+
+.topic-status h2 {
+    margin: 0 0 10px;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.topic-status-error {
+    border-color: rgba(225, 29, 72, 0.24);
+}
+
+.topic-status button {
+    margin-top: 18px;
+    padding: 9px 18px;
+    border: 1px solid var(--accent-color);
+    border-radius: var(--radius-md);
+    color: #ffffff;
+    background: var(--accent-color);
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.topic-status button:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
 /* カード共通 */
 .topic-card {
     --card-accent: var(--accent-color);
