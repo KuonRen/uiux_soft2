@@ -1,6 +1,6 @@
-using uiux.Models;
+using uiux_soft2.Models;
 
-namespace uiux.Services;
+namespace uiux_soft2.Services;
 
 public class OsakaDataService
 {

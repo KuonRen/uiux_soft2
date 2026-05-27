@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using uiux.Components;
-using uiux.Services;
+using uiux_soft2.Components;
+using uiux_soft2.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

@@ -30,7 +30,7 @@ dotnet run
 ## Publish
 
 ```powershell
-dotnet publish uiux.csproj -c Release
+dotnet publish uiux_soft2.csproj -c Release
 ```
 
 GitHub Pagesへの公開は、`master` ブランチへのpush後にGitHub Actionsで実行されます。

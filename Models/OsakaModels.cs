@@ -1,4 +1,4 @@
-namespace uiux.Models;
+namespace uiux_soft2.Models;
 
 public class TopicItem
 {

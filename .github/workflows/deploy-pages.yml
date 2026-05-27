@@ -32,7 +32,7 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Publish
-        run: dotnet publish uiux.csproj -c Release -o publish
+        run: dotnet publish uiux_soft2.csproj -c Release -o publish
 
       - name: Configure base href for GitHub Pages
         run: sed -i 's|<base href="/" />|<base href="/uiux_soft2/" />|g' publish/wwwroot/index.html
