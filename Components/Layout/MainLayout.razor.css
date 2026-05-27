@@ -15,10 +15,13 @@
 /* ヘッダー外枠 */
 .site-header {
     width: 100%;
-    border-bottom: 1px solid var(--border-color);
-    background: color-mix(in srgb, var(--surface-main) 88%, transparent);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 82%, var(--osaka-gold));
+    background:
+        linear-gradient(90deg, color-mix(in srgb, var(--surface-main) 88%, transparent), color-mix(in srgb, var(--surface-sub) 78%, transparent)),
+        linear-gradient(90deg, rgba(217, 72, 15, 0.08), rgba(0, 124, 137, 0.08));
+    backdrop-filter: blur(18px) saturate(1.25);
+    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.28), var(--neon-glow);
 }
 
 /* ヘッダー内側 */
@@ -41,12 +44,16 @@
     text-decoration: none;
     flex-shrink: 0;
     border-radius: var(--radius-md);
+    padding: 6px 8px 6px 6px;
+    transition: background 160ms ease, transform 160ms ease;
 }
 
 /* ブランド hover */
 .site-brand:hover {
     color: var(--text-primary);
+    background: var(--accent-soft);
     text-decoration: none;
+    transform: translateY(-1px);
 }
 
 /* ブランド画像 */
@@ -56,7 +63,8 @@
     display: block;
     object-fit: contain;
     flex-shrink: 0;
-    border-radius: var(--radius-sm);
+    border-radius: 12px;
+    box-shadow: 0 0 0 3px var(--accent-soft), 0 8px 18px rgba(217, 72, 15, 0.18);
 }
 
 /* ブランド文字全体 */
@@ -70,13 +78,13 @@
 .site-brand-title {
     color: var(--text-primary);
     font-size: 1rem;
-    font-weight: 800;
+    font-weight: 900;
     letter-spacing: -0.02em;
 }
 
 /* ブランドサブタイトル */
 .site-brand-subtitle {
-    color: var(--text-muted);
+    color: var(--osaka-blue);
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -87,14 +95,14 @@
 .theme-toggle {
     min-width: 104px;
     padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+    border: 1px solid color-mix(in srgb, var(--border-color) 70%, var(--accent-color));
+    border-radius: 999px;
     color: var(--text-primary);
-    background: var(--surface-raised);
+    background: linear-gradient(135deg, var(--surface-raised), var(--accent-surface));
     font-size: 0.82rem;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-soft);
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
@@ -109,6 +117,7 @@
     transform: translateY(-1px);
     border-color: var(--accent-color);
     color: var(--accent-color);
+    box-shadow: var(--neon-glow);
 }
 
 /* キーボード操作時 */
@@ -144,7 +153,8 @@
 .site-footer {
     width: 100%;
     border-top: 1px solid var(--border-color);
-    background: var(--surface-sub);
+    background:
+        linear-gradient(90deg, color-mix(in srgb, var(--surface-sub) 88%, var(--osaka-blue) 12%), var(--surface-sub));
 }
 
 /* フッター内側 */

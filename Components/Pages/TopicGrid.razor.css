@@ -1,7 +1,7 @@
 .topic-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
+    gap: 20px;
     scroll-margin-top: 32px;
 }
 
@@ -10,10 +10,12 @@
     --card-accent-soft: var(--accent-soft);
     min-height: 232px;
     padding: 22px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
+    border: 1px solid color-mix(in srgb, var(--border-color) 78%, var(--card-accent));
+    border-radius: 16px;
     color: var(--text-primary);
-    background: var(--surface-raised);
+    background:
+        linear-gradient(145deg, var(--surface-raised), color-mix(in srgb, var(--surface-main) 82%, var(--card-accent-soft))),
+        radial-gradient(circle at 18% 0%, var(--card-accent-soft), transparent 38%);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     box-shadow: var(--shadow-soft);
@@ -30,42 +32,46 @@
 }
 
 .topic-card.gradient-spots {
-    --card-accent: #f97316;
-    --card-accent-soft: rgba(249, 115, 22, 0.12);
-    background: linear-gradient(135deg, var(--surface-raised), rgba(249, 115, 22, 0.06));
+    --card-accent: var(--osaka-blue);
+    --card-accent-soft: var(--osaka-blue-soft);
 }
 
 :root[data-theme="dark"] .topic-card.gradient-spots {
-    background: linear-gradient(135deg, var(--surface-raised), rgba(249, 115, 22, 0.09));
-    border-color: rgba(249, 115, 22, 0.22);
+    border-color: color-mix(in srgb, var(--osaka-blue) 32%, transparent);
 }
 
 .topic-card.gradient-history {
-    --card-accent: #d97706;
-    --card-accent-soft: rgba(217, 119, 6, 0.12);
-    background: linear-gradient(135deg, var(--surface-raised), rgba(217, 119, 6, 0.06));
+    --card-accent: var(--osaka-gold);
+    --card-accent-soft: rgba(242, 183, 5, 0.16);
 }
 
 :root[data-theme="dark"] .topic-card.gradient-history {
-    background: linear-gradient(135deg, var(--surface-raised), rgba(217, 119, 6, 0.09));
-    border-color: rgba(217, 119, 6, 0.22);
+    border-color: color-mix(in srgb, var(--osaka-gold) 34%, transparent);
 }
 
 .topic-card.gradient-food {
-    --card-accent: #e11d48;
-    --card-accent-soft: rgba(225, 29, 72, 0.12);
-    background: linear-gradient(135deg, var(--surface-raised), rgba(225, 29, 72, 0.06));
+    --card-accent: var(--accent-color);
+    --card-accent-soft: var(--accent-soft);
 }
 
 :root[data-theme="dark"] .topic-card.gradient-food {
-    background: linear-gradient(135deg, var(--surface-raised), rgba(225, 29, 72, 0.09));
-    border-color: rgba(225, 29, 72, 0.22);
+    border-color: color-mix(in srgb, var(--accent-color) 34%, transparent);
 }
 
 .topic-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
     border-color: var(--card-accent);
-    box-shadow: var(--shadow-strong);
+    box-shadow: var(--shadow-strong), 0 0 26px color-mix(in srgb, var(--card-accent) 20%, transparent);
+}
+
+.topic-card::after {
+    content: "";
+    position: absolute;
+    inset: auto 18px 0 18px;
+    height: 3px;
+    border-radius: 999px 999px 0 0;
+    background: linear-gradient(90deg, transparent, var(--card-accent), transparent);
+    opacity: 0.55;
 }
 
 .topic-card:focus-visible {
@@ -94,7 +100,7 @@
     width: fit-content;
     padding: 4px 10px;
     border-radius: 999px;
-    color: var(--card-accent);
+    color: color-mix(in srgb, var(--card-accent) 82%, var(--text-primary));
     background: var(--card-accent-soft);
     font-size: 0.72rem;
     font-weight: 800;
@@ -106,8 +112,8 @@
     margin-top: auto;
     color: var(--text-primary);
     font-size: 1.38rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
+    font-weight: 900;
+    letter-spacing: -0.015em;
 }
 
 .topic-card-description {

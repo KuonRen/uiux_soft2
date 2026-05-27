@@ -1,9 +1,11 @@
 .topic-status {
     padding: 28px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
+    border: 1px solid color-mix(in srgb, var(--border-color) 78%, var(--osaka-blue));
+    border-radius: 16px;
     color: var(--text-secondary);
-    background: var(--surface-raised);
+    background:
+        linear-gradient(135deg, var(--surface-raised), color-mix(in srgb, var(--surface-main) 86%, var(--osaka-blue-soft))),
+        radial-gradient(circle at 0% 0%, var(--accent-soft), transparent 34%);
     box-shadow: var(--shadow-soft);
 }
 
@@ -20,16 +22,16 @@
 }
 
 .topic-status-error {
-    border-color: rgba(225, 29, 72, 0.24);
+    border-color: color-mix(in srgb, var(--osaka-pink) 42%, var(--border-color));
 }
 
 .topic-status button {
     margin-top: 18px;
     padding: 9px 18px;
-    border: 1px solid var(--accent-color);
-    border-radius: var(--radius-md);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 82%, var(--osaka-gold));
+    border-radius: 999px;
     color: #ffffff;
-    background: var(--accent-color);
+    background: linear-gradient(135deg, var(--accent-color), color-mix(in srgb, var(--accent-color) 72%, var(--osaka-pink)));
     font-size: 0.9rem;
     font-weight: 800;
     cursor: pointer;
