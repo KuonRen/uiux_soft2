@@ -17,6 +17,7 @@
 
 - .NET 10
 - Blazor WebAssembly
+- wasm-tools
 - C# / Razor
 - HTML / CSS
 - JSON data
@@ -54,6 +55,12 @@ dotnet build
 
 ## Publish
 
+初回のみ、Release publishの最適化に使う `wasm-tools` をインストールします。
+
+```powershell
+dotnet workload install wasm-tools
+```
+
 ```powershell
 dotnet publish uiux_soft2.csproj -c Release
 ```
@@ -62,7 +69,7 @@ dotnet publish uiux_soft2.csproj -c Release
 
 `master` ブランチへpushすると、GitHub ActionsでBlazor WebAssemblyをpublishし、GitHub Pagesへデプロイします。
 
-workflowでは `index.html` の `<base href="/">` を `/uiux_soft2/` に置き換え、SPA fallback用に `404.html` を生成します。
+workflowでは `wasm-tools` をインストールしてからpublishし、`index.html` の `<base href="/">` を `/uiux_soft2/` に置き換え、SPA fallback用に `404.html` を生成します。
 
 ## 主なファイル
 
