@@ -11,226 +11,34 @@
 
 <section class="page-container">
 
-    <div class="home-hero-layout">
-        <section class="page-hero" aria-labelledby="page-title">
-            <p class="page-kicker">guide site</p>
-
-            <h1 id="page-title">
-                大阪の魅力を紹介
-            </h1>
-
-            <p class="page-lead">
-                大阪を知りたい人を対象に観光地・歴史・食べ物の3つの視点から、大阪の特徴を短い記事として紹介します。
-                観光と食べ物のトピックは旅行の前の検索にお勧めです！
-            </p>
-        </section>
-
-        @if (currentHeroItem is not null) {
-            <button class="topic-hero"
-                    type="button"
-                    @onclick="() => OpenHeroArticle(currentHeroItem)"
-                    aria-label="@($"{currentHeroItem.Article.Title}の記事を開く")">
-                <img class="topic-hero-image is-active"
-                     src="@currentHeroItem.Article.ImagePath"
-                     alt="@currentHeroItem.Article.Title"
-                     onerror="this.style.display='none'" />
-
-                @if (nextHeroItem is not null) {
-                    <img @key="nextHeroItem.Article.ImagePath"
-                         class="topic-hero-image is-next"
-                         src="@nextHeroItem.Article.ImagePath"
-                         alt=""
-                         @onload="ShowNextHeroImage"
-                         onerror="this.style.display='none'" />
-                }
-
-                <div class="topic-hero-caption">
-                    <span>Topic Image</span>
-                    <strong>@currentHeroItem.Article.Title</strong>
-                    <em>@currentHeroItem.Topic.Title</em>
-                </div>
-            </button>
-        }
-    </div>
+    <TopicHero CurrentItem="currentHeroItem"
+               NextItem="nextHeroItem"
+               OnOpenArticle="NavigateToArticle"
+               OnNextImageLoaded="ShowNextHeroImage" />
 
     @if (isLoadingTopics) {
-        <section class="topic-status" aria-live="polite">
-            <p>記事データを読み込んでいます。</p>
-        </section>
+        <TopicStatus IsLoading="true" />
     } else if (!string.IsNullOrEmpty(loadErrorMessage)) {
-        <section class="topic-status topic-status-error" role="alert">
-            <h2>記事データを読み込めませんでした</h2>
-            <p>@loadErrorMessage</p>
-            <button type="button" @onclick="LoadTopicsAsync">
-                再読み込み
-            </button>
-        </section>
+        <TopicStatus ErrorMessage="@loadErrorMessage"
+                     OnReload="LoadTopicsAsync" />
     } else {
-        <div id="topics" class="topic-grid" aria-label="大阪を知る3つの項目">
-            @foreach (var topic in topics) {
-                <button class="topic-card @topic.GradientClass"
-                        type="button"
-                        @onclick="() => OpenModal(topic)"
-                        aria-label="@($"{topic.Title}の詳細を開く")">
-
-                    <div class="topic-card-icon" aria-hidden="true">
-                        @if (topic.IconType == "spots") {
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
-                            </svg>
-                        } else if (topic.IconType == "history") {
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                                <path d="M6 6h10"></path>
-                                <path d="M6 10h10"></path>
-                            </svg>
-                        } else if (topic.IconType == "food") {
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
-                                <path d="M7 2v20"></path>
-                                <path d="M21 15V2v0a5 5 0 0 0-5 5v8c0 1.1.9 2 2 2h3Z"></path>
-                                <path d="M19 17v5"></path>
-                            </svg>
-                        }
-                    </div>
-
-                    <span class="topic-card-index">
-                        @topic.IndexLabel
-                    </span>
-
-                    <span class="topic-card-title">
-                        @topic.Title
-                    </span>
-
-                    <span class="topic-card-description">
-                        @topic.Description
-                    </span>
-
-                    <span class="topic-card-footer">
-                        <span>@topic.Articles.Count 件の記事</span>
-                        <span>詳しく見る →</span>
-                    </span>
-                </button>
-            }
-        </div>
+        <TopicGrid Topics="topics"
+                   OnOpenTopic="OpenModal" />
     }
 
     @if (isModalOpen && selectedTopic is not null && selectedArticle is not null) {
-        <div class="topic-modal-backdrop" @onclick="CloseModal">
-            <section class="topic-modal"
-                     role="dialog"
-                     aria-modal="true"
-                     aria-labelledby="topic-modal-title"
-                     @onclick:stopPropagation>
-
-                <div class="topic-modal-header">
-                    <div>
-                        <p class="topic-modal-kicker">Selected Topic</p>
-
-                        <h2 id="topic-modal-title">
-                            <span class="topic-modal-icon" aria-hidden="true">
-                                @if (selectedTopic.IconType == "spots") {
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
-                                    </svg>
-                                } else if (selectedTopic.IconType == "history") {
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                                        <path d="M6 6h10"></path>
-                                        <path d="M6 10h10"></path>
-                                    </svg>
-                                } else if (selectedTopic.IconType == "food") {
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
-                                        <path d="M7 2v20"></path>
-                                        <path d="M21 15V2v0a5 5 0 0 0-5 5v8c0 1.1.9 2 2 2h3Z"></path>
-                                        <path d="M19 17v5"></path>
-                                    </svg>
-                                }
-                            </span>
-                            <span>@selectedTopic.Title</span>
-                        </h2>
-                    </div>
-
-                    <button class="topic-modal-close"
-                            type="button"
-                            @onclick="CloseModal"
-                            aria-label="モーダルを閉じる">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="topic-modal-body">
-
-                    <div class="topic-article-list" aria-label="記事一覧">
-                        @foreach (var article in selectedTopic.Articles) {
-                            <button class="@GetArticleButtonClass(article)"
-                                    type="button"
-                                    @onclick="() => SelectArticle(article)">
-                                @article.Title
-                            </button>
-                        }
-                    </div>
-
-                    <div class="topic-article-content">
-                        @* @key を設定することで、記事が切り替わったときに要素が再構築され、CSSアニメーションが再トリガーされます *@
-                        <article @key="selectedArticle">
-                            <h3>@selectedArticle.Title</h3>
-                            @if (!string.IsNullOrEmpty(selectedArticle.ImagePath)) {
-                                <button class="topic-article-image-container"
-                                        type="button"
-                                        @onclick="() => PreviewImage(selectedArticle.ImagePath)"
-                                        aria-label="画像を拡大表示">
-                                    <img src="@selectedArticle.ImagePath" alt="@selectedArticle.Title" onerror="this.style.display='none'" />
-                                    <span class="image-zoom-badge" aria-hidden="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="11" cy="11" r="8"></circle>
-                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                            <line x1="11" y1="8" x2="11" y2="14"></line>
-                                            <line x1="8" y1="11" x2="14" y2="11"></line>
-                                        </svg>
-                                    </span>
-                                </button>
-                            }
-                            <p>@selectedArticle.Body</p>
-                        </article>
-                    </div>
-
-                </div>
-
-                <div class="topic-modal-footer">
-                    <button class="topic-article-copy-link"
-                            type="button"
-                            @onclick="() => CopyArticleLinkAsync(selectedArticle)">
-                        @GetCopyLinkLabel(selectedArticle)
-                    </button>
-
-                    <button type="button" @onclick="CloseModal">
-                        閉じる
-                    </button>
-                </div>
-
-            </section>
-        </div>
+        <ArticleModal Topic="selectedTopic"
+                      Article="selectedArticle"
+                      CopyLinkLabel="@GetCopyLinkLabel(selectedArticle)"
+                      OnSelectArticle="SelectArticle"
+                      OnPreviewImage="PreviewImage"
+                      OnCopyArticleLink="CopyArticleLinkAsync"
+                      OnClose="CloseModal" />
     }
 
     @if (!string.IsNullOrEmpty(previewImageUrl)) {
-        <div class="image-lightbox-backdrop" @onclick="ClosePreview">
-            <div class="image-lightbox-content" @onclick:stopPropagation>
-                <img src="@previewImageUrl" alt="拡大画像プレビュー" />
-                <button class="image-lightbox-close" type="button" @onclick="ClosePreview" aria-label="プレビューを閉じる">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
+        <ImageLightbox ImageUrl="@previewImageUrl"
+                       OnClose="ClosePreview" />
     }
 
 </section>
@@ -264,6 +72,7 @@
     private async Task LoadTopicsAsync() {
         isLoadingTopics = true;
         loadErrorMessage = null;
+        StopHeroRotation();
         ResetModalState();
 
         try {
@@ -323,10 +132,6 @@
         if (firstArticle is not null) {
             NavigateToArticle(firstArticle);
         }
-    }
-
-    private void OpenHeroArticle(HeroImageItem item) {
-        NavigateToArticle(item.Article);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
@@ -396,13 +201,6 @@
         }
 
         return "この記事のリンクをコピー";
-    }
-
-    // 選択中の記事ボタンだけ見た目を変える
-    private string GetArticleButtonClass(TopicArticle article) {
-        return selectedArticle == article
-            ? "topic-article-button is-selected"
-            : "topic-article-button";
     }
 
     private void NavigateToArticle(TopicArticle article) {
@@ -493,9 +291,12 @@
     }
 
     public void Dispose() {
-        heroRotationCancellation?.Cancel();
-        heroRotationCancellation?.Dispose();
+        StopHeroRotation();
     }
 
-    private sealed record HeroImageItem(TopicItem Topic, TopicArticle Article);
+    private void StopHeroRotation() {
+        heroRotationCancellation?.Cancel();
+        heroRotationCancellation?.Dispose();
+        heroRotationCancellation = null;
+    }
 }

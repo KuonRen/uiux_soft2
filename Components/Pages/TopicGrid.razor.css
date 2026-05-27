@@ -1,0 +1,176 @@
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    scroll-margin-top: 32px;
+}
+
+.topic-card {
+    --card-accent: var(--accent-color);
+    --card-accent-soft: var(--accent-soft);
+    min-height: 232px;
+    padding: 22px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    color: var(--text-primary);
+    background: var(--surface-raised);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 180ms ease, 
+                box-shadow 200ms ease, 
+                border-color 200ms ease, 
+                background 200ms ease;
+}
+
+.topic-card.gradient-spots {
+    --card-accent: #f97316;
+    --card-accent-soft: rgba(249, 115, 22, 0.12);
+    background: linear-gradient(135deg, var(--surface-raised), rgba(249, 115, 22, 0.06));
+}
+
+:root[data-theme="dark"] .topic-card.gradient-spots {
+    background: linear-gradient(135deg, var(--surface-raised), rgba(249, 115, 22, 0.09));
+    border-color: rgba(249, 115, 22, 0.22);
+}
+
+.topic-card.gradient-history {
+    --card-accent: #d97706;
+    --card-accent-soft: rgba(217, 119, 6, 0.12);
+    background: linear-gradient(135deg, var(--surface-raised), rgba(217, 119, 6, 0.06));
+}
+
+:root[data-theme="dark"] .topic-card.gradient-history {
+    background: linear-gradient(135deg, var(--surface-raised), rgba(217, 119, 6, 0.09));
+    border-color: rgba(217, 119, 6, 0.22);
+}
+
+.topic-card.gradient-food {
+    --card-accent: #e11d48;
+    --card-accent-soft: rgba(225, 29, 72, 0.12);
+    background: linear-gradient(135deg, var(--surface-raised), rgba(225, 29, 72, 0.06));
+}
+
+:root[data-theme="dark"] .topic-card.gradient-food {
+    background: linear-gradient(135deg, var(--surface-raised), rgba(225, 29, 72, 0.09));
+    border-color: rgba(225, 29, 72, 0.22);
+}
+
+.topic-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--card-accent);
+    box-shadow: var(--shadow-strong);
+}
+
+.topic-card:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 4px;
+}
+
+.topic-card-icon {
+    color: var(--card-accent);
+    background: var(--card-accent-soft);
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    transition: transform 200ms ease;
+}
+
+.topic-card:hover .topic-card-icon {
+    transform: scale(1.04);
+}
+
+.topic-card-index {
+    width: fit-content;
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: var(--card-accent);
+    background: var(--card-accent-soft);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+}
+
+.topic-card-title {
+    margin-top: auto;
+    color: var(--text-primary);
+    font-size: 1.38rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+
+.topic-card-description {
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.topic-card-footer {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.topic-card-footer span:last-child {
+    color: var(--card-accent);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: transform 160ms ease;
+}
+
+.topic-card:hover .topic-card-footer span:last-child {
+    transform: translateX(4px);
+}
+
+@media (max-width: 900px) {
+    .topic-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .topic-card {
+        min-height: 180px;
+    }
+
+    .topic-card-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .topic-card {
+        min-height: 170px;
+        padding: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .topic-card {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .topic-card:hover {
+        transform: none !important;
+    }
+}

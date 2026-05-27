@@ -1,0 +1,38 @@
+<div id="topics" class="topic-grid" aria-label="大阪を知る3つの項目">
+    @foreach (var topic in Topics) {
+        <button class="topic-card @topic.GradientClass"
+                type="button"
+                @onclick="() => OnOpenTopic.InvokeAsync(topic)"
+                aria-label="@($"{topic.Title}の詳細を開く")">
+
+            <div class="topic-card-icon" aria-hidden="true">
+                <TopicIcon IconType="@topic.IconType" />
+            </div>
+
+            <span class="topic-card-index">
+                @topic.IndexLabel
+            </span>
+
+            <span class="topic-card-title">
+                @topic.Title
+            </span>
+
+            <span class="topic-card-description">
+                @topic.Description
+            </span>
+
+            <span class="topic-card-footer">
+                <span>@topic.Articles.Count 件の記事</span>
+                <span>詳しく見る →</span>
+            </span>
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<TopicItem> Topics { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<TopicItem> OnOpenTopic { get; set; }
+}

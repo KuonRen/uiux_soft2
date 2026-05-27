@@ -1,0 +1,56 @@
+<div class="home-hero-layout">
+    <section class="page-hero" aria-labelledby="page-title">
+        <p class="page-kicker">guide site</p>
+
+        <h1 id="page-title">
+            大阪の魅力を紹介
+        </h1>
+
+        <p class="page-lead">
+            大阪を知りたい人を対象に観光地・歴史・食べ物の3つの視点から、大阪の特徴を短い記事として紹介します。
+            観光と食べ物のトピックは旅行の前の検索にお勧めです！
+        </p>
+    </section>
+
+    @if (CurrentItem is not null) {
+        <button class="topic-hero"
+                type="button"
+                @onclick="() => OnOpenArticle.InvokeAsync(CurrentItem.Article)"
+                aria-label="@($"{CurrentItem.Article.Title}の記事を開く")">
+            <img class="topic-hero-image is-active"
+                 src="@CurrentItem.Article.ImagePath"
+                 alt="@CurrentItem.Article.Title"
+                 onerror="this.style.display='none'" />
+
+            @if (NextItem is not null) {
+                <img @key="NextItem.Article.ImagePath"
+                     class="topic-hero-image is-next"
+                     src="@NextItem.Article.ImagePath"
+                     alt=""
+                     @onload="OnNextImageLoaded"
+                     onerror="this.style.display='none'" />
+            }
+
+            <div class="topic-hero-caption">
+                <span>Topic Image</span>
+                <strong>@CurrentItem.Article.Title</strong>
+                <em>@CurrentItem.Topic.Title</em>
+            </div>
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public HeroImageItem? CurrentItem { get; set; }
+
+    [Parameter]
+    public HeroImageItem? NextItem { get; set; }
+
+    [Parameter]
+    public EventCallback<TopicArticle> OnOpenArticle { get; set; }
+
+    [Parameter]
+    public EventCallback OnNextImageLoaded { get; set; }
+
+}
