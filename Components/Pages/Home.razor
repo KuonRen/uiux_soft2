@@ -69,6 +69,7 @@
     private bool didRestoreFavorites;
 
     protected override async Task OnInitializedAsync() {
+        FavoriteService.ModalVisibilityChanged += HandleFavoriteModalVisibilityChanged;
         await LoadTopicsAsync();
     }
 
@@ -283,6 +284,10 @@
 
         try {
             while (await timer.WaitForNextTickAsync(cancellationToken)) {
+                if (FavoriteService.IsFavoriteModalOpen) {
+                    continue;
+                }
+
                 nextHeroItem = GetNextHeroItem();
                 await InvokeAsync(StateHasChanged);
             }
@@ -300,7 +305,15 @@
     }
 
     public void Dispose() {
+        FavoriteService.ModalVisibilityChanged -= HandleFavoriteModalVisibilityChanged;
         StopHeroRotation();
+    }
+
+    private void HandleFavoriteModalVisibilityChanged() {
+        if (FavoriteService.IsFavoriteModalOpen) {
+            nextHeroItem = null;
+            _ = InvokeAsync(StateHasChanged);
+        }
     }
 
     private void StopHeroRotation() {

@@ -8,6 +8,10 @@ public sealed class FavoriteArticleService
     private readonly HashSet<string> favoriteIds = new(StringComparer.OrdinalIgnoreCase);
 
     public event Action? Changed;
+    public event Action? ModalVisibilityChanged;
+
+    public bool IsFavoriteModalOpen { get; private set; }
+    private bool canOpenSecretRoute;
 
     public IReadOnlyList<FavoriteArticleItem> Favorites =>
         favoriteIds
@@ -58,6 +62,28 @@ public sealed class FavoriteArticleService
         }
 
         Changed?.Invoke();
+        return true;
+    }
+
+    public void SetFavoriteModalOpen(bool isOpen) {
+        if (IsFavoriteModalOpen == isOpen) {
+            return;
+        }
+
+        IsFavoriteModalOpen = isOpen;
+        ModalVisibilityChanged?.Invoke();
+    }
+
+    public void GrantSecretRouteAccess() {
+        canOpenSecretRoute = true;
+    }
+
+    public bool ConsumeSecretRouteAccess() {
+        if (!canOpenSecretRoute) {
+            return false;
+        }
+
+        canOpenSecretRoute = false;
         return true;
     }
 

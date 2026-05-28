@@ -2,6 +2,7 @@
 @implements IDisposable
 @inject uiux_soft2.Services.FavoriteArticleService FavoriteService
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <div class="app-shell">
     <header class="site-header">
@@ -61,10 +62,14 @@
 
     @if (isFavoriteModalOpen) {
         <div class="favorite-modal-backdrop" @onclick="CloseFavoriteModal">
-            <section class="favorite-modal"
+            <section class="favorite-modal @favoriteModalNudgeClass"
+                     @ref="favoriteModalElement"
                      role="dialog"
                      aria-modal="true"
                      aria-labelledby="favorite-modal-title"
+                     tabindex="-1"
+                     @onkeydown="HandleFavoriteModalKeyDown"
+                     @onkeydown:stopPropagation="true"
                      @onclick:stopPropagation="true">
                 <div class="favorite-modal-header">
                     <div>
@@ -111,18 +116,59 @@
 </div>
 
 @code {
+    private static readonly string[] FavoriteSecretCommand = [
+        "ArrowUp",
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowLeft",
+        "ArrowRight",
+        "B",
+        "A"
+    ];
+
     private bool isFavoriteModalOpen;
+    private bool shouldFocusFavoriteModal;
+    private ElementReference favoriteModalElement;
+    private readonly List<string> favoriteCommandBuffer = new();
+    private string? favoriteModalNudgeClass;
 
     protected override void OnInitialized() {
         FavoriteService.Changed += HandleFavoritesChanged;
     }
 
-    private void OpenFavoriteModal() {
-        isFavoriteModalOpen = true;
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (shouldFocusFavoriteModal) {
+            shouldFocusFavoriteModal = false;
+
+            try {
+                await JSRuntime.InvokeVoidAsync("window.appModal.setupFocusTrap", ".favorite-modal");
+            } catch (JSException) {
+            }
+        }
     }
 
-    private void CloseFavoriteModal() {
+    private void OpenFavoriteModal() {
+        isFavoriteModalOpen = true;
+        shouldFocusFavoriteModal = true;
+        favoriteCommandBuffer.Clear();
+        favoriteModalNudgeClass = null;
+        FavoriteService.SetFavoriteModalOpen(true);
+    }
+
+    private async Task CloseFavoriteModal() {
         isFavoriteModalOpen = false;
+        shouldFocusFavoriteModal = false;
+        favoriteCommandBuffer.Clear();
+        favoriteModalNudgeClass = null;
+        FavoriteService.SetFavoriteModalOpen(false);
+
+        try {
+            await JSRuntime.InvokeVoidAsync("window.appModal.removeFocusTrap", ".favorite-modal");
+        } catch (JSException) {
+        }
     }
 
     private async Task RemoveFavoriteAsync(string articleId) {
@@ -132,6 +178,82 @@
             } catch (JSException) {
             }
         }
+    }
+
+    private async Task HandleFavoriteModalKeyDown(KeyboardEventArgs e) {
+        if (!isFavoriteModalOpen) {
+            return;
+        }
+
+        var key = NormalizeSecretCommandKey(e.Key);
+        if (string.IsNullOrEmpty(key)) {
+            return;
+        }
+
+        if (TryGetNudgeClass(key, out var nudgeClass)) {
+            await NudgeFavoriteModalAsync(nudgeClass);
+        }
+
+        favoriteCommandBuffer.Add(key);
+
+        while (!IsSecretCommandPrefix() && favoriteCommandBuffer.Count > 0) {
+            favoriteCommandBuffer.RemoveAt(0);
+        }
+
+        if (favoriteCommandBuffer.Count == FavoriteSecretCommand.Length) {
+            favoriteCommandBuffer.Clear();
+            isFavoriteModalOpen = false;
+            FavoriteService.SetFavoriteModalOpen(false);
+
+            try {
+                await JSRuntime.InvokeVoidAsync("window.appModal.removeFocusTrap", ".favorite-modal");
+            } catch (JSException) {
+            }
+
+            FavoriteService.GrantSecretRouteAccess();
+            NavigationManager.NavigateTo("5ecr3t");
+        }
+    }
+
+    private static string NormalizeSecretCommandKey(string key) {
+        if (key.Length == 1 && char.IsLetter(key[0])) {
+            return key.ToUpperInvariant();
+        }
+
+        return key;
+    }
+
+    private static bool TryGetNudgeClass(string key, out string nudgeClass) {
+        nudgeClass = key switch {
+            "ArrowUp" => "is-nudging-up",
+            "ArrowDown" => "is-nudging-down",
+            "ArrowLeft" => "is-nudging-left",
+            "ArrowRight" => "is-nudging-right",
+            _ => string.Empty
+        };
+
+        return !string.IsNullOrEmpty(nudgeClass);
+    }
+
+    private async Task NudgeFavoriteModalAsync(string nudgeClass) {
+        favoriteModalNudgeClass = null;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(1);
+        favoriteModalNudgeClass = nudgeClass;
+    }
+
+    private bool IsSecretCommandPrefix() {
+        if (favoriteCommandBuffer.Count > FavoriteSecretCommand.Length) {
+            return false;
+        }
+
+        for (var i = 0; i < favoriteCommandBuffer.Count; i++) {
+            if (favoriteCommandBuffer[i] != FavoriteSecretCommand[i]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void HandleFavoritesChanged() {

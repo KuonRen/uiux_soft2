@@ -169,6 +169,22 @@
     overflow: hidden;
 }
 
+.favorite-modal.is-nudging-up {
+    animation: favoriteNudgeUp 180ms ease-out;
+}
+
+.favorite-modal.is-nudging-down {
+    animation: favoriteNudgeDown 180ms ease-out;
+}
+
+.favorite-modal.is-nudging-left {
+    animation: favoriteNudgeLeft 180ms ease-out;
+}
+
+.favorite-modal.is-nudging-right {
+    animation: favoriteNudgeRight 180ms ease-out;
+}
+
 .favorite-modal-header {
     padding: 20px 22px 16px;
     border-bottom: 1px solid var(--border-color);
@@ -319,6 +335,54 @@
 .favorite-title {
     font-size: 0.88rem;
     font-weight: 850;
+}
+
+@keyframes favoriteNudgeUp {
+    0% {
+        transform: translateY(0);
+    }
+    45% {
+        transform: translateY(-7px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes favoriteNudgeDown {
+    0% {
+        transform: translateY(0);
+    }
+    45% {
+        transform: translateY(7px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes favoriteNudgeLeft {
+    0% {
+        transform: translateX(0);
+    }
+    45% {
+        transform: translateX(-7px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes favoriteNudgeRight {
+    0% {
+        transform: translateX(0);
+    }
+    45% {
+        transform: translateX(7px);
+    }
+    100% {
+        transform: translateX(0);
+    }
 }
 
 /* テーマ切り替えボタン */
@@ -543,4 +607,11 @@
         .theme-toggle:hover {
             transform: none;
         }
+
+    .favorite-modal.is-nudging-up,
+    .favorite-modal.is-nudging-down,
+    .favorite-modal.is-nudging-left,
+    .favorite-modal.is-nudging-right {
+        animation: none;
+    }
 }
