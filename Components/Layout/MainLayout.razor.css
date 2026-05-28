@@ -91,6 +91,236 @@
     text-transform: uppercase;
 }
 
+.site-header-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    min-width: 0;
+}
+
+.favorite-trigger {
+    min-width: 136px;
+    min-height: 38px;
+    padding: 8px 12px;
+    border: 1px solid color-mix(in srgb, var(--border-color) 78%, var(--osaka-gold));
+    border-radius: 999px;
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--surface-raised) 92%, var(--osaka-gold));
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 0.82rem;
+    font-weight: 850;
+    user-select: none;
+    transition: border-color 160ms ease, transform 160ms ease, color 160ms ease;
+}
+
+.favorite-trigger:hover {
+    border-color: var(--osaka-gold);
+    color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+.favorite-trigger:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+}
+
+.favorite-count {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    color: #ffffff;
+    background: var(--accent-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.74rem;
+    font-weight: 900;
+}
+
+.favorite-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: grid;
+    place-items: center;
+}
+
+.favorite-modal {
+    width: min(560px, 100%);
+    max-height: min(680px, calc(100vh - 48px));
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: var(--surface-main);
+    box-shadow: var(--shadow-strong);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
+}
+
+.favorite-modal-header {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.favorite-modal-header h2 {
+    margin: 2px 0 0;
+    color: var(--text-primary);
+    font-size: 1.18rem;
+    font-weight: 900;
+    line-height: 1.3;
+}
+
+.favorite-modal-kicker {
+    margin: 0;
+    color: var(--osaka-blue);
+    font-size: 0.72rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.favorite-modal-close {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    color: var(--text-primary);
+    background: var(--surface-raised);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 160ms ease, transform 160ms ease, color 160ms ease;
+}
+
+.favorite-modal-close span {
+    display: block;
+    font-size: 1.22rem;
+    font-weight: 800;
+    line-height: 1;
+    transform: translateY(-2px);
+}
+
+.favorite-modal-close:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+.favorite-modal-close:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+}
+
+.favorite-modal-body {
+    min-height: 0;
+    padding: 12px;
+    overflow-y: auto;
+}
+
+.favorite-empty {
+    margin: 0;
+    padding: 18px;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.favorite-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+}
+
+.favorite-list-item {
+    border: 1px solid color-mix(in srgb, var(--border-color) 76%, transparent);
+    border-radius: var(--radius-md);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: stretch;
+    overflow: hidden;
+}
+
+.favorite-list-item:focus-within,
+.favorite-list-item:hover {
+    border-color: color-mix(in srgb, var(--accent-color) 45%, var(--border-color));
+}
+
+.favorite-list a {
+    padding: 12px 14px;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.favorite-list a:hover {
+    background: var(--accent-soft);
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.favorite-list a:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+.favorite-remove {
+    min-width: 58px;
+    padding: 0 14px;
+    border: 0;
+    border-left: 1px solid color-mix(in srgb, var(--border-color) 76%, transparent);
+    color: var(--text-muted);
+    background: var(--surface-raised);
+    cursor: pointer;
+    font-size: 0.76rem;
+    font-weight: 850;
+    transition: background 160ms ease, color 160ms ease;
+}
+
+.favorite-remove:hover {
+    color: #ffffff;
+    background: var(--accent-color);
+}
+
+.favorite-remove:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: -3px;
+}
+
+.favorite-topic {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.favorite-title {
+    font-size: 0.88rem;
+    font-weight: 850;
+}
+
 /* テーマ切り替えボタン */
 .theme-toggle {
     min-width: 104px;
@@ -252,6 +482,42 @@
         min-width: 82px;
         padding: 7px 10px;
         font-size: 0.76rem;
+    }
+
+    .site-header-actions {
+        gap: 8px;
+    }
+
+    .favorite-trigger {
+        min-width: auto;
+        padding: 7px 10px;
+        font-size: 0.76rem;
+    }
+
+    .favorite-trigger span:nth-child(2) {
+        display: none;
+    }
+
+    .favorite-modal-backdrop {
+        padding: 16px;
+        align-items: center;
+    }
+
+    .favorite-modal {
+        max-height: calc(100vh - 32px);
+    }
+
+    .favorite-modal-header {
+        padding: 18px 18px 14px;
+    }
+
+    .favorite-list-item {
+        grid-template-columns: minmax(0, 1fr) 54px;
+    }
+
+    .favorite-remove {
+        min-width: 54px;
+        padding: 0 10px;
     }
 
     .site-footer-inner {

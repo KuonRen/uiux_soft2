@@ -160,8 +160,6 @@
                             firstElement.focus();
                             e.preventDefault();
                         }
-                    } else if (e.key === "Escape" && closeBtn) {
-                        closeBtn.click();
                     }
                 };
 
@@ -184,39 +182,32 @@
             }
         };
 
-        window.appLightbox = {
-            setup: function (contentSelector, closeSelector) {
-                const content = document.querySelector(contentSelector);
-                const closeBtn = document.querySelector(closeSelector);
-                if (!content || !closeBtn) return;
+        window.appFavorites = {
+            storageKey: "uiux-soft2-favorites",
+            get: function () {
+                try {
+                    const value = localStorage.getItem(window.appFavorites.storageKey);
+                    const parsed = value ? JSON.parse(value) : [];
 
-                window.appLightbox.remove();
-                window.appLightbox._lastFocusedElement = document.activeElement;
-
-                content.setAttribute("tabindex", "-1");
-                content.focus();
-
-                const handleKeyDown = function (e) {
-                    if (e.key === "Escape") {
-                        closeBtn.click();
-                    }
-                };
-
-                window.appLightbox._listener = handleKeyDown;
-                document.addEventListener("keydown", handleKeyDown);
-            },
-            remove: function () {
-                if (window.appLightbox._listener) {
-                    document.removeEventListener("keydown", window.appLightbox._listener);
-                    delete window.appLightbox._listener;
+                    return Array.isArray(parsed)
+                        ? parsed.filter((id) => typeof id === "string")
+                        : [];
+                } catch {
+                    return [];
                 }
+            },
+            set: function (articleIds) {
+                try {
+                    const safeIds = Array.isArray(articleIds)
+                        ? articleIds.filter((id) => typeof id === "string")
+                        : [];
 
-                if (window.appLightbox._lastFocusedElement && typeof window.appLightbox._lastFocusedElement.focus === "function") {
-                    window.appLightbox._lastFocusedElement.focus();
-                    delete window.appLightbox._lastFocusedElement;
+                    localStorage.setItem(window.appFavorites.storageKey, JSON.stringify(safeIds));
+                } catch {
                 }
             }
         };
+
     </script>
 
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>

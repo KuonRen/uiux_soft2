@@ -4,6 +4,8 @@
                  role="dialog"
                  aria-modal="true"
                  aria-labelledby="topic-modal-title"
+                 tabindex="-1"
+                 @onkeydown="HandleKeyDown"
                  @onclick:stopPropagation>
 
             <div class="topic-modal-header">
@@ -65,6 +67,15 @@
             </div>
 
             <div class="topic-modal-footer">
+                <button class="topic-article-favorite"
+                        type="button"
+                        aria-pressed="@IsFavorite.ToString().ToLowerInvariant()"
+                        aria-label="@GetFavoriteLabel()"
+                        @onclick="() => OnToggleFavorite.InvokeAsync(Article)">
+                    <span aria-hidden="true">@GetFavoriteIcon()</span>
+                    <span>@GetFavoriteText()</span>
+                </button>
+
                 <button class="topic-article-copy-link"
                         type="button"
                         @onclick="() => OnCopyArticleLink.InvokeAsync(Article)">
@@ -88,6 +99,9 @@
     public string CopyLinkLabel { get; set; } = "この記事のリンクをコピー";
 
     [Parameter]
+    public bool IsFavorite { get; set; }
+
+    [Parameter]
     public EventCallback<TopicArticle> OnSelectArticle { get; set; }
 
     [Parameter]
@@ -97,11 +111,32 @@
     public EventCallback<TopicArticle> OnCopyArticleLink { get; set; }
 
     [Parameter]
+    public EventCallback<TopicArticle> OnToggleFavorite { get; set; }
+
+    [Parameter]
     public EventCallback OnClose { get; set; }
 
     private string GetArticleButtonClass(TopicArticle article) {
         return Article == article
             ? "topic-article-button is-selected"
             : "topic-article-button";
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs args) {
+        if (args.Key == "Escape") {
+            await OnClose.InvokeAsync();
+        }
+    }
+
+    private string GetFavoriteIcon() {
+        return IsFavorite ? "★" : "☆";
+    }
+
+    private string GetFavoriteText() {
+        return IsFavorite ? "お気に入り済み" : "お気に入り";
+    }
+
+    private string GetFavoriteLabel() {
+        return IsFavorite ? "お気に入りから外す" : "お気に入りに追加";
     }
 }

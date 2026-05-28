@@ -1,6 +1,10 @@
 @if (!string.IsNullOrEmpty(ImageUrl)) {
     <div class="image-lightbox-backdrop" @onclick="OnClose">
-        <div class="image-lightbox-content" @onclick:stopPropagation>
+        <div class="image-lightbox-content"
+             tabindex="-1"
+             @ref="contentElement"
+             @onkeydown="HandleKeyDown"
+             @onclick:stopPropagation>
             <img src="@ImageUrl" alt="拡大画像プレビュー" />
             <button class="image-lightbox-close" type="button" @onclick="OnClose" aria-label="プレビューを閉じる">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -18,4 +22,18 @@
 
     [Parameter]
     public EventCallback OnClose { get; set; }
+
+    private ElementReference contentElement;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            await contentElement.FocusAsync();
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs args) {
+        if (args.Key == "Escape") {
+            await OnClose.InvokeAsync();
+        }
+    }
 }

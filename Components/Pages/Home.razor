@@ -4,6 +4,7 @@
 @using uiux_soft2.Services
 @implements IDisposable
 @inject OsakaDataService DataService
+@inject FavoriteArticleService FavoriteService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 
@@ -29,10 +30,12 @@
     @if (isModalOpen && selectedTopic is not null && selectedArticle is not null) {
         <ArticleModal Topic="selectedTopic"
                       Article="selectedArticle"
+                      IsFavorite="@FavoriteService.IsFavorite(selectedArticle.Id)"
                       CopyLinkLabel="@GetCopyLinkLabel(selectedArticle)"
                       OnSelectArticle="SelectArticle"
                       OnPreviewImage="PreviewImage"
                       OnCopyArticleLink="CopyArticleLinkAsync"
+                      OnToggleFavorite="ToggleFavorite"
                       OnClose="CloseModal" />
     }
 
@@ -53,7 +56,6 @@
     private bool isModalOpen;
     private bool _shouldSetupTrap;
     private bool _shouldRemoveTrap;
-    private bool _shouldSetupLightbox;
     private bool isLoadingTopics = true;
     private string? previewImageUrl;
     private string? loadErrorMessage;
@@ -64,6 +66,7 @@
     private HeroImageItem? nextHeroItem;
     private readonly Random random = new();
     private CancellationTokenSource? heroRotationCancellation;
+    private bool didRestoreFavorites;
 
     protected override async Task OnInitializedAsync() {
         await LoadTopicsAsync();
@@ -92,6 +95,7 @@
                 .Where(article => !string.IsNullOrWhiteSpace(article.ImagePath))
                 .Select(article => new HeroImageItem(topic, article)))
             .ToList();
+        FavoriteService.RegisterTopics(topics);
         currentHeroItem = GetNextHeroItem();
 
         if (heroItems.Count > 1) {
@@ -135,6 +139,12 @@
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender && !didRestoreFavorites) {
+            didRestoreFavorites = true;
+            var favoriteIds = await JSRuntime.InvokeAsync<string[]>("window.appFavorites.get");
+            FavoriteService.RestoreFavorites(favoriteIds);
+        }
+
         if (_shouldRemoveTrap) {
             _shouldRemoveTrap = false;
             await JSRuntime.InvokeVoidAsync("window.appModal.removeFocusTrap", ".topic-modal");
@@ -146,10 +156,6 @@
             await JSRuntime.InvokeVoidAsync("window.appModal.setupFocusTrap", ".topic-modal");
         }
 
-        if (_shouldSetupLightbox && !string.IsNullOrEmpty(previewImageUrl)) {
-            _shouldSetupLightbox = false;
-            await JSRuntime.InvokeVoidAsync("window.appLightbox.setup", ".image-lightbox-content", ".image-lightbox-close");
-        }
     }
 
     // 記事ボタンクリック時に本文を切り替える
@@ -170,14 +176,11 @@
     // プレビュー表示
     private void PreviewImage(string url) {
         previewImageUrl = url;
-        _shouldSetupLightbox = true;
     }
 
     // プレビューを閉じる
-    private async Task ClosePreview() {
-        await JSRuntime.InvokeVoidAsync("window.appLightbox.remove");
+    private void ClosePreview() {
         previewImageUrl = null;
-        _shouldSetupLightbox = false;
     }
 
     private async Task CopyArticleLinkAsync(TopicArticle article) {
@@ -188,6 +191,13 @@
         } catch (JSException) {
             copiedArticleId = null;
             copyErrorArticleId = article.Id;
+        }
+    }
+
+    private async Task ToggleFavorite(TopicArticle article) {
+        if (selectedTopic is not null) {
+            FavoriteService.ToggleFavorite(selectedTopic, article);
+            await JSRuntime.InvokeVoidAsync("window.appFavorites.set", FavoriteService.GetFavoriteIds());
         }
     }
 
@@ -247,7 +257,6 @@
         selectedTopic = null;
         selectedArticle = null;
         previewImageUrl = null;
-        _shouldSetupLightbox = false;
         copiedArticleId = null;
         copyErrorArticleId = null;
     }

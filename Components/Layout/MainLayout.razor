@@ -1,4 +1,7 @@
 @inherits LayoutComponentBase
+@implements IDisposable
+@inject uiux_soft2.Services.FavoriteArticleService FavoriteService
+@inject IJSRuntime JSRuntime
 
 <div class="app-shell">
     <header class="site-header">
@@ -11,6 +14,17 @@
                     <span class="site-brand-subtitle">Osaka Guide</span>
                 </span>
             </a>
+
+            <div class="site-header-actions">
+                <button class="favorite-trigger"
+                        type="button"
+                        aria-haspopup="dialog"
+                        aria-expanded="@isFavoriteModalOpen.ToString().ToLowerInvariant()"
+                        @onclick="OpenFavoriteModal">
+                    <span aria-hidden="true">☆</span>
+                    <span>お気に入り</span>
+                    <span class="favorite-count">@FavoriteService.Favorites.Count</span>
+                </button>
 
             <button class="theme-toggle"
                     type="button"
@@ -25,6 +39,7 @@
                     Light
                 </span>
             </button>
+            </div>
         </div>
     </header>
 
@@ -43,4 +58,87 @@
             </p>
         </div>
     </footer>
+
+    @if (isFavoriteModalOpen) {
+        <div class="favorite-modal-backdrop" @onclick="CloseFavoriteModal">
+            <section class="favorite-modal"
+                     role="dialog"
+                     aria-modal="true"
+                     aria-labelledby="favorite-modal-title"
+                     @onclick:stopPropagation="true">
+                <div class="favorite-modal-header">
+                    <div>
+                        <p class="favorite-modal-kicker">Favorite Articles</p>
+                        <h2 id="favorite-modal-title">お気に入り一覧</h2>
+                    </div>
+
+                    <button class="favorite-modal-close"
+                            type="button"
+                            aria-label="お気に入り一覧を閉じる"
+                            @onclick="CloseFavoriteModal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+
+                <div class="favorite-modal-body">
+                    @if (FavoriteService.Favorites.Count == 0) {
+                        <p class="favorite-empty">お気に入りはまだありません。</p>
+                    } else {
+                        <ul class="favorite-list">
+                            @foreach (var favorite in FavoriteService.Favorites) {
+                                <li>
+                                    <div class="favorite-list-item">
+                                        <a href="@($"article/{favorite.Id}")" @onclick="CloseFavoriteModal">
+                                            <span class="favorite-topic">@favorite.TopicTitle</span>
+                                            <span class="favorite-title">@favorite.Title</span>
+                                        </a>
+
+                                        <button class="favorite-remove"
+                                                type="button"
+                                                aria-label="@($"{favorite.Title}をお気に入りから削除")"
+                                                @onclick="() => RemoveFavoriteAsync(favorite.Id)">
+                                            削除
+                                        </button>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </section>
+        </div>
+    }
 </div>
+
+@code {
+    private bool isFavoriteModalOpen;
+
+    protected override void OnInitialized() {
+        FavoriteService.Changed += HandleFavoritesChanged;
+    }
+
+    private void OpenFavoriteModal() {
+        isFavoriteModalOpen = true;
+    }
+
+    private void CloseFavoriteModal() {
+        isFavoriteModalOpen = false;
+    }
+
+    private async Task RemoveFavoriteAsync(string articleId) {
+        if (FavoriteService.RemoveFavorite(articleId)) {
+            try {
+                await JSRuntime.InvokeVoidAsync("window.appFavorites.set", FavoriteService.GetFavoriteIds());
+            } catch (JSException) {
+            }
+        }
+    }
+
+    private void HandleFavoritesChanged() {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose() {
+        FavoriteService.Changed -= HandleFavoritesChanged;
+    }
+}
