@@ -78,6 +78,7 @@
 
                 <button class="topic-article-copy-link"
                         type="button"
+                        data-copy-text="@CopyLinkHref"
                         @onclick="() => OnCopyArticleLink.InvokeAsync(Article)">
                     @CopyLinkLabel
                 </button>
@@ -97,6 +98,9 @@
 
     [Parameter]
     public string CopyLinkLabel { get; set; } = "この記事のリンクをコピー";
+
+    [Parameter]
+    public string CopyLinkHref { get; set; } = string.Empty;
 
     [Parameter]
     public bool IsFavorite { get; set; }

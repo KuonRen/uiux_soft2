@@ -32,6 +32,7 @@
                       Article="selectedArticle"
                       IsFavorite="@FavoriteService.IsFavorite(selectedArticle.Id)"
                       CopyLinkLabel="@GetCopyLinkLabel(selectedArticle)"
+                      CopyLinkHref="@GetArticleHref(selectedArticle)"
                       OnSelectArticle="SelectArticle"
                       OnPreviewImage="PreviewImage"
                       OnCopyArticleLink="CopyArticleLinkAsync"
@@ -186,9 +187,12 @@
 
     private async Task CopyArticleLinkAsync(TopicArticle article) {
         try {
-            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", GetArticleHref(article));
-            copiedArticleId = article.Id;
-            copyErrorArticleId = null;
+            var articleHref = GetArticleHref(article);
+            var preparedCopyResult = await JSRuntime.InvokeAsync<bool?>("window.appClipboard.getPreparedResult", articleHref);
+            var copied = preparedCopyResult ?? await JSRuntime.InvokeAsync<bool>("window.appClipboard.copyText", articleHref);
+
+            copiedArticleId = copied ? article.Id : null;
+            copyErrorArticleId = copied ? null : article.Id;
         } catch (JSException) {
             copiedArticleId = null;
             copyErrorArticleId = article.Id;
