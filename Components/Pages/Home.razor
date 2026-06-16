@@ -51,6 +51,9 @@
     [Parameter]
     public string? ArticleId { get; set; }
 
+    [SupplyParameterFromQuery(Name = "article")]
+    public string? QueryArticleId { get; set; }
+
     private List<TopicItem> topics = new();
     private TopicItem? selectedTopic;
     private TopicArticle? selectedArticle;
@@ -92,6 +95,8 @@
             return;
         }
 
+        NormalizeArticleImagePaths();
+
         heroItems = topics
             .SelectMany(topic => topic.Articles
                 .Where(article => !string.IsNullOrWhiteSpace(article.ImagePath))
@@ -118,7 +123,9 @@
     }
 
     private void HandleArticleRoute() {
-        if (string.IsNullOrWhiteSpace(ArticleId)) {
+        var activeArticleId = GetActiveArticleId();
+
+        if (string.IsNullOrWhiteSpace(activeArticleId)) {
             if (isModalOpen) {
                 ResetModalState();
                 _shouldRemoveTrap = true;
@@ -127,7 +134,7 @@
             return;
         }
 
-        if (!OpenArticleById(ArticleId)) {
+        if (!OpenArticleById(activeArticleId)) {
             NavigateToNotFound();
         }
     }
@@ -223,7 +230,24 @@
     }
 
     private string GetArticleHref(TopicArticle article) {
-        return $"{NavigationManager.BaseUri}article/{article.Id}";
+        return $"{NavigationManager.BaseUri}?article={Uri.EscapeDataString(article.Id)}";
+    }
+
+    private string? GetActiveArticleId() {
+        return !string.IsNullOrWhiteSpace(QueryArticleId)
+            ? QueryArticleId
+            : ArticleId;
+    }
+
+    private void NormalizeArticleImagePaths() {
+        foreach (var article in topics.SelectMany(topic => topic.Articles)) {
+            if (string.IsNullOrWhiteSpace(article.ImagePath) || Uri.IsWellFormedUriString(article.ImagePath, UriKind.Absolute)) {
+                continue;
+            }
+
+            var relativePath = article.ImagePath.TrimStart('/');
+            article.ImagePath = NavigationManager.ToAbsoluteUri(relativePath).ToString();
+        }
     }
 
     private bool OpenArticleById(string articleId) {

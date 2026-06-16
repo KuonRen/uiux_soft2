@@ -7,13 +7,19 @@
 
 ## メソッド名
 
-- `CopyArticleLinkAsync`：`Components/Pages/Home.razor`, 188行目
+- `GetActiveArticleId`：`Components/Pages/Home.razor`, 236行目
+    ┗ ルートパラメータとクエリ文字列のどちらから記事IDを取得するかを決めるメソッド。
+- `NormalizeArticleImagePaths`：`Components/Pages/Home.razor`, 242行目
+    ┗ JSON内の相対画像パスを現在のBaseUri基準の絶対URLへ変換するメソッド。
+- `CopyArticleLinkAsync`：`Components/Pages/Home.razor`, 195行目
     ┗ 記事リンクのコピー結果を取得し、成功・失敗の表示状態を更新するメソッド。
 
 ---
 
 ## 重要な変数名
 
+- `QueryArticleId`：`Components/Pages/Home.razor`, 55行目
+    ┗ fallback不要の共有URL `?article=` から記事IDを受け取るページパラメータ。
 - `CopyLinkHref`：`Components/Pages/ArticleModal.razor`, 103行目
     ┗ 記事リンクコピー用に、ブラウザー側へ渡すコピー対象URLを保持するコンポーネントパラメータ。
 
